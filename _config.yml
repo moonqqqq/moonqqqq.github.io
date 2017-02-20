@@ -1,0 +1,46 @@
+# Site settings
+title: 김문규블로그
+description: "Node.js 백엔드 개발자"
+url: "http://www.moonqqqq.github.io"
+author:
+  name: "moonq kim"
+  email: "make.abundant@gmail.com"
+  url: "http://www.moonqqqq.github.io"
+
+# Build settings
+baseurl: / # Change this to your relative path (ex: /blog/), or leave just a /
+
+highlighter: rouge
+markdown: kramdown
+kramdown:
+  syntax_highlighter: rouge
+  syntax_highlighter_opts:
+    block:
+      line_numbers: true
+      
+
+
+source: .
+destination: ./_site
+permalink: /:title
+paginate: 8
+paginate_path: /page:num/
+
+# Default values
+defaults:
+  -
+    scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "post"
+
+gems: ["jekyll-paginate", "jekyll-sitemap"]
+
+# Custom variables
+version: "1.0.0"
+
+# Options
+custom_header: false
+custom_nav_footer: false
+reverse: false
