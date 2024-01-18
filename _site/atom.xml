@@ -4,7 +4,7 @@
  <title>김문규블로그</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <id>http://localhost:4000</id>
- <updated>2024-01-17T21:48:29+09:00</updated>
+ <updated>2024-01-18T11:04:07+09:00</updated>
  <author>
    <name>moonq kim</name>
    <uri>http://www.moonqqqq.github.io</uri>
@@ -18,7 +18,7 @@
    <link href="http://localhost:4000/exception-6"/>
    <id>http://localhost:4000/exception-6</id>
    <updated>2023-12-20T00:00:00+09:00</updated>
-   <content type="html">&lt;h5 id=&quot;목차&quot;&gt;목차&lt;/h5&gt; &lt;ul&gt; &lt;li&gt;&lt;a href=&quot;#내용&quot;&gt;1. Exception의 내용&lt;/a&gt;&lt;/li&gt; &lt;li&gt;&lt;a href=&quot;#발생&quot;&gt;2. 계층화/구조화&lt;/a&gt;&lt;/li&gt; &lt;li&gt;&lt;a href=&quot;#필터&quot;&gt;3. 발생시킨 Exception 처리 - 익셉션 필터 구조화&lt;/a&gt;&lt;/li&gt; &lt;/ul&gt; &lt;hr /&gt; &lt;h2 id=&quot;1-exception의-내용-&quot;&gt;1. Exception의 내용 &lt;a id=&quot;내용&quot;&gt;&lt;/a&gt;&lt;/h2&gt; &lt;p&gt;구조화에 들어가기전에 잠시 정리하고 넘어가면.. &lt;br /&gt; Exception은 클라이언트에게 API 이용 가이드가 되어야한다. 그러기 위해 형식이 &lt;strong&gt;고정&lt;/strong&gt;돼어야 한다. 디테일해야 하며, 클라이언트가 이용할수...</content>
+   <content type="html">&lt;h5 id=&quot;목차&quot;&gt;목차&lt;/h5&gt; &lt;ul&gt; &lt;li&gt;&lt;a href=&quot;#내용&quot;&gt;Exception의 내용&lt;/a&gt;&lt;/li&gt; &lt;li&gt;&lt;a href=&quot;#발생&quot;&gt;계층화/구조화&lt;/a&gt; &lt;ul&gt; &lt;li&gt;&lt;a href=&quot;#layer2&quot;&gt;Layer2&lt;/a&gt;&lt;/li&gt; &lt;li&gt;&lt;a href=&quot;#layer3&quot;&gt;Layer3&lt;/a&gt;&lt;/li&gt; &lt;li&gt;&lt;a href=&quot;#layer4&quot;&gt;Layer4&lt;/a&gt;&lt;/li&gt; &lt;/ul&gt; &lt;/li&gt; &lt;li&gt;&lt;a href=&quot;#필터&quot;&gt;발생시킨 Exception 처리 - 익셉션 필터 구조화&lt;/a&gt; &lt;ul&gt; &lt;li&gt;&lt;a href=&quot;#eachLayer&quot;&gt;계층별&lt;/a&gt;&lt;/li&gt; &lt;li&gt;&lt;a href=&quot;#thrid&quot;&gt;Third party library&lt;/a&gt;&lt;/li&gt; &lt;li&gt;&lt;a href=&quot;#unhandled&quot;&gt;Unhandled exception&lt;/a&gt;&lt;/li&gt; &lt;/ul&gt; &lt;/li&gt; &lt;/ul&gt; &lt;hr /&gt; &lt;h2 id=&quot;1-exception의-내용-&quot;&gt;1. Exception의 내용 &lt;a id=&quot;내용&quot;&gt;&lt;/a&gt;&lt;/h2&gt; &lt;p&gt;구조화에 들어가기전에 잠시 정리하고...</content>
  </entry>
 
  
