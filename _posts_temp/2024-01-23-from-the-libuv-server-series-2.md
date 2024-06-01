@@ -13,6 +13,9 @@ tags:
 [<U>(현재글) 2.서버가 받은 데이터가 어떻게 처리되는지. Node.js만의 방식이 어떤지 정리한다.</U>](https://moonqqqq.github.io/from-the-libuv-server-series-1)</U><br>
 3.Node.js만의 방식을 하나하나 조금 더 디테일하게 - Event loop, Libuv, V8, JS
 
+<br>
+
+이전 단계에서 데이터가 receive socket buffer에 도착했다. 이제 Node.js 서버가 데이터를 가져와서 처리해야한다. 데이터를 가져오는 일을 해주는 것이 libuv
 
 일단 Node.js 서버가 가지고 있는 receive socket buffer는 하나가 아니다. 여러 클라이언트와 연결되기때문에 연결되는 클라이언트 수만큼 소켓이 생기게 된다. 이렇게 되면 관리해야하는 socket이 꽤나 많아지는데 
 

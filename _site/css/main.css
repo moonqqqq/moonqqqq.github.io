@@ -216,7 +216,7 @@ blockquote p, blockquote ul, blockquote ol {
 }
 @media (min-width: 940px) {
   #nav a, #nav-left a {
-    font-size: 1em;
+    font-size: 0.9em;
   }
 }
 #nav a:hover, #nav-left a:hover {
