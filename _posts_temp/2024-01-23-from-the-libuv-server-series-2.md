@@ -10,7 +10,7 @@ tags:
 
 #### 시리즈 목차
 [1.서버는 데이터를 받아서 처리하고 응답값을 반환하는 곳이니 데이터를 받는 과정부터 정리한다.](https://moonqqqq.github.io/before-arriving-server-server-series-1)<br>
-<U>[(현재글) 2.서버가 받은 데이터가 어떻게 처리되는지. Node.js만의 방식이 어떤지 정리한다.](https://moonqqqq.github.io/from-the-libuv-server-series-1)</U><br>
+[<U>(현재글) 2.서버가 받은 데이터가 어떻게 처리되는지. Node.js만의 방식이 어떤지 정리한다.</U>](https://moonqqqq.github.io/from-the-libuv-server-series-1)</U><br>
 3.Node.js만의 방식을 하나하나 조금 더 디테일하게 - Event loop, Libuv, V8, JS
 
 
