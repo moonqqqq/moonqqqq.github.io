@@ -1,7 +1,7 @@
 ---
 title: 서버가 데이터를 받기까지 [epoll] - 서버가 작동하는 흐름 2
 description: 클라이언트의 요청이 서버도착하기 전까지의 흐름.
-header: API 서버가 데이터를 받기까지 - 서버가 작동하는 흐름 1
+header: 서버가 데이터를 받기까지 [epoll] - 서버가 작동하는 흐름 2
 tags:
  - node.js
  - TCP/IP
