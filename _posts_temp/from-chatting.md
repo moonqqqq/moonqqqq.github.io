@@ -7,12 +7,11 @@
 
 SNS에 채팅 기능이 있으니 됐다.
 
-- DB 구조 짜기.
-- OOP 코드
+- OOP
 - DDD
 - TDD
 - message queue(kafka)
-- scalable way(justin bibber upload twit)
+- scalable way(when famous user uploaded tweet)
 
 
 
