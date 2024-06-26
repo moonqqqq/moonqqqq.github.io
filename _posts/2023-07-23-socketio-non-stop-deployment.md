@@ -1,7 +1,7 @@
 ---
 title: Socket.io 무중단 배포
 description: Socket.io 무중단 배포
-header: Socket.io 무중단 배포
+header: 채팅서버 무중단 배포(Socket.io)
 tags:
  - node.js
  - Socket.io
