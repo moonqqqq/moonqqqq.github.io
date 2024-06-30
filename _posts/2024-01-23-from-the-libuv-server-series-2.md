@@ -22,23 +22,23 @@ tags:
 
 일단 서버로 향하는 모든 연결은 하나의 소켓으로 가는게 아니다. 여러 클라이언트와 연결되기때문에 연결되는 클라이언트 수만큼 소켓이 생기게 된다. 이렇게 되면 관리해야하는 socket이 꽤나 많아지는데. 이를 관리하는 매커니즘 종류에 따라 IO 성능의 차이가 있다. 고전적인 방법(select, poll)보다 libuv가 탁월히 좋다. (select, poll, libuv 비교는 글 마지막에..)
 
-socket에서 데이터를 가져오는 것은 libuv가 책임이라고 했는데, libuv안에 존재하는 OS별 라이브러리를 이용하여 작동한다. linux는 epoll, windows는 kqueue가 있다. 우리의 서버는 대부분 리눅스에서 돌아가니 "epoll"을 중심으로 파악해보자.
+socket에서 데이터를 가져오는 것은 libuv의 책임이라고 했다. libuv안에 존재하는 OS별 라이브러리를 이용하여 작동한다. linux는 epoll, windows는 kqueue가 있다. 우리의 서버는 대부분 리눅스에서 돌아가니 "epoll"을 중심으로 파악해보자.
 
 epoll은 3가지 함수가 핵심이다. **"epoll_create()", "epoll_ctl()", "epoll_wait()"**".
 
 ### epoll_create()
-epoll_create()는 두가지 자료구조를 만든다. <U>첫째는 연결된 전체 fd 목록을 가진다.(**Interest list**) 두번째 자료구조는 새로운 이벤트가 발생한 fd목록을 가진다.(**ready list**)</U> node.js 서버가 실행됐을 때 epoll_create() 또한 실행된다.
+epoll_create()는 두가지 자료구조를 만든다. <U>첫번째 자료구조는 "연결된 전체 fd 목록"을 가진다.(**Interest list**) 두번째 자료구조는 "새로운 이벤트가 발생한 fd목록"을 가진다.(**ready list**)</U> node.js 서버가 실행됐을 때 epoll_create() 또한 실행된다.
 
 ### epoll_ctl()
-새로운 연결이 들어오면 ***epoll_ctl()*** 함수를 이용해서 새로운 fd를 Interest list에 등록한다. 이 등록 과정에서 *어떤 작업에 대해 감지*할건지도 명시해주어야 한다. 예를 들어, 새로운 연결이 들어왔을 때는 새로운 데이터가 들어오는 이벤트(EPOLLIN)를 감지하도록 설정해둔다.
+새로운 연결이 들어오면 ***epoll_ctl()*** 함수를 이용해서 새로운 FD를 Interest list에 등록한다. 이 등록 과정에서 *어떤 작업에 대해 감지*할건지도 명시해주어야 한다. 예를 들어, 새로운 연결이 들어왔을 때는 EPOLLIN 이벤트를 감지하도록 설정해둔다.
 
-이제 새로운 데이터를 받아오는 셋팅이 완료된 상태이다. 이제 Interest list에 등록된 *fd*와 *특정 이벤트* 두 조건이 만족하는 상황이 발생하면 ready list에 해당 fd가 추가된다. event_crl() 함수를 이용하요 필터링 프로세스를 추가한 것이라고 생각하면 된다.
+이제 새로운 데이터를 받아오는 셋팅이 완료된 상태이다. 이제 Interest list에 등록된 FD에서 감지중인 이벤트 중 이벤트가 하나라도 발생한다면 ready list에 해당 FD가 추가된다. event_crl() 함수를 이용하여 이벤트 필터링 프로세스를 추가한 것이라고 생각하면 된다.
 
 ### epoll_wait()
-이제 마지막으로 epoll_wait() 함수가 실행되면 ready list에 있는 fd들을 event loop에 전달한다.
+이제 마지막으로 epoll_wait() 함수가 실행되면 ready list에 있는 FD들을 event loop에 전달한다.
 
 #### epoll_wait() 디테일
-epoll_create()와 epoll_ctl()은 운영체제단에서 알아서 실행하지만 epoll_wait()는 event loop(libuv)단에서 실행된다. event loop의 poll phase에서 IO관련된 이벤트들을 처리하는건 이미 알고있을것이다. 그러니 당연히 새로운 IO 또한 poll phase에서 책임진다.
+epoll_create()와 epoll_ctl()은 운영체제단에서 알아서 실행하지만 epoll_wait()는 event loop(libuv)단에서 실행된다. event loop의 **poll phase**에서 IO 관련된 이벤트들을 처리하는건 이미 알고있을것이다. 그러니 당연히 새로운 IO 또한 poll phase에서 책임진다.
 
 poll phase내에서 epoll_wait() 함수를 실행하여 새로운 IO가 발생한 fd목록을 가져온다. 하지만 ready list에 어떠한 fd도 존재하지 않는다면 새로운 IO가 생길때까지 기다린다.(그래서 이름에 "wait"이 붙어있다.) 다만 이 기다리는 조건은 상황에 따라 달라진다. 아래 event loop 코드(uv_run())을 보면 다른 phase들과 다르게 uv__io_poll() 함수만 두번째 인자로 timeout을 가지고 있는걸 알수 있다. 이 timeout을 통해 얼마동안 새로운 IO를 기다릴지를 정한다.
 
