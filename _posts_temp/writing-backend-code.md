@@ -63,7 +63,31 @@ API가 비지니스 로직을 다 처리했다. 그렇다면 이제 다시 DTO�
 
 #### service에서 repository로 이동할 때.
 
-
 ## Domain과 Service의 차이, 이용 예시
-## Output DTO 이용 방법
 
+## repository에서 중요한 점
+- 같은 entity에서 select를 이용해서 가져오는 데이터가 다르게 하지않아야한다.
+- Join에 대해서도 되도록 같은 데이터를 가져오는 query라면 같은 join을 이용한다.
+=> 이 두가지가 충족해야 도메인 객체의 일관성이 유지된다.
+해당 API에서 특정 데이터가 필요없다고해도 코드의 일관성이 중요하다.
+
+역시나 **"코드 성능 최적화는 필요할 때한다."**
+
+- DTO
+1. validation, 
+2. transfromation - toDomain() 안에서 타입변환.
+
+- controller
+1. http controller, socket controller 등 외부와 접촉점 처리.
+2. service layer 이용.
+
+- service
+1. 기반 비지니스로직 처리 transaction, 다른 외부 서비스 이용 등
+2. repository 호출도 이곳에서.
+
+- domain
+1. 순수 js만 포함. 외부 라이브러리 x 객체로 비지니스로직을 처리한다.
+2. toEntity(), fromEntity()(꼭 필요한가? 그냥 생성자로쓰는 것도?) 를 가진다 ???
+
+- repository
+1. 영속성 데이터베이스 엑새스하는 계층.
