@@ -20,6 +20,8 @@
 - TDZ는 무슨 관련?
 
 
+##### 중요중요
+# 변수나 함수를 위로 올린다는 개념보다 실행 컨텍스트에 미리 등록한다는게 맞지?
 
 # The browser's JavaScript engine then creates a special environment to handle the transformation and execution of this JavaScript code. This environment is known as the Execution Context.
 # The Execution Context contains the code that's currently running, and everything that aids in its execution.
