@@ -17,8 +17,20 @@
 
 파싱 -> 실행 컨텍스트 생성 -> 코드 실행
 
+TDZ는 선언은 됐지만 초기화는 안됐을 때를 나타낸다.
+
+var는 "undefined" 로 초기화가 된다.
+
+역시나 실행 컨텍스트는 모두 선언/실행과 관련이 있다.
+
 - TDZ는 무슨 관련?
 
+
+creation phase,
+    - create VO
+    - set scope
+    - set this
+excution phase
 
 ##### 중요중요
 # 변수나 함수를 위로 올린다는 개념보다 실행 컨텍스트에 미리 등록한다는게 맞지?
@@ -38,6 +50,13 @@ AST는 코드의 구조와 구문을 나타내는 데 주로 사용되며, 변�
 
 "실행 컨텍스트는 코드 실행 중에 생성되며," 선언에 실행되지않음. 선언에는 렉시컬 환경이 생성됨?
 
+
+This process of storing variables and function declaration in memory prior to the execution of the code is known as Hoisting. Since this is an important concept, we'll talk about it briefly before moving on to the next stage.
+
+#### execution context에서는 변수를 선언해놓기만하고. 코드가 지나갈때마다 변수를 설정한다.
+
+
+클로저가 생성될 때, 자바스크립트 엔진은 해당 클로저가 참조하는 변수들을 힙 메모리에 저장합니다. 이는 클로저가 해당 변수를 지속적으로 참조할 수 있도록 하기 위함입니다. 변수는 원래 스택 프레임에 저장되지만, 클로저가 참조할 경우 힙 메모리로 이동됩니다.
 
 - https://www.freecodecamp.org/news/execution-context-how-javascript-works-behind-the-scenes/
 - https://dev.to/mihirverma7781/inside-javascript-engine-373
