@@ -1,3 +1,5 @@
+!! with out var keyword.
+
 선언과 호출의 차이를 알아야 한다.
 
 - execution context
@@ -31,6 +33,14 @@ creation phase,
     - set scope
     - set this
 excution phase
+
+예전에는 VO라는 말로 정의했지만 ES6부터는 Lexical Environment라는 말을 쓴다.
+
+Environment Record and Reference of outer Lexical Environment.
+
+함수선언, 블록, catch, try를 만나면 새로 만든다.
+
+ A Lexical Environment holds identifier-variable mappings.
 
 ##### 중요중요
 # 변수나 함수를 위로 올린다는 개념보다 실행 컨텍스트에 미리 등록한다는게 맞지?
