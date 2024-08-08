@@ -42,42 +42,34 @@ for (const user of users) { // 첫번째 Loop
 
 
 ## Hash Join
-조인에 이용하는 값을 해시 함수를 통해 키를 만든다. 그리고 그 해시 값을 key로 설정한다. value로는 해시값을 만든 데이터의 전체 혹은 일부분이 들어간다.
+Hash Join은 두 테이블이 조인하는 특정 값을 이용한다. 둘이 같은 값을 가지고 있기 때문에(user, school이라면 user가 schoolId를 가지므로 같은 값을 가짐.) 같은 해시 함수를 실행하면 같은 응답값이 나오는 걸 이용하는 것이다.
+
+먼저 해시 테이블을 만든다. 조인된 두 테이블 중 사이즈가 작은 테이블을 찾는다. 그리고 작은 사이즈의 테이블을 순회하며 해시테이블을 만든다. <U>해시 테이블</U>의 키는 조인에 이용되는 값을 해시 함수 실행시켜 얻은 값이다. <U>해시 테이블의 값</U>은 해당 열이다. 해당 열의 일부분이 저장될수도 있고 전부가 저장될수도 있다. 혹은 해당 열의 메모리 주소값일수도 있다.(메모리 주소로 값을 저장하면 추후에 메모리 주소로 다시 접근하여 데이터를 얻어야하는 단점이 있다.)
 
 데이터가 아래와 같다면
 
 ![1](/img/writing-images/usertable.png)
 ![2](/img/writing-images/schooltable.png)
 
-먼저 School 테이블을 읽어 School 해시 테이블을 만든다. User와 School 테이블은 schoolId로 서로 조인하고 있기 때문에 School.id를 해시함수 실행시켜 키 값을 만들어낸다.
-
-'해시 함수를 실행시킨 값 : school 데이터 일부 데이터 or 데이터 주소' 의 형태로 테이블이 생성된다.
+먼저 School테이블이 사이즈가 더 작기때문에 School 테이블을 이용하여 해시 테이블을 만든다. User와 School 테이블은 schoolId로 서로 조인하고 있기 때문에 School.id를 해시함수 실행시켜 키 값을 설정한다. 그리고 해시 테이블의 값으로는 해당 열 데이터의 일부를 저장한다. 예시에서는 school 데이터의 ID를 저장한다.
 
 ![2](/img/writing-images/hashtable.png)
 
-"aaa1"은 schoolId 1 을 해시 실행한 값.<br>
-"aaa2"은 schoolId 2 을 해시 실행한 값.<br>
-"aaa3"은 schoolId 3 을 해시 실행한 값이라고 생각하면 된다.
-
-그리고 값으로는 해시 함수를 실행시킨 원본 데이터의 일부분 혹은 원본 데이터의 메모리 주소를 저장한다.
-
-이제 나머지 테이블(크기가 좀더 큰 테이블)에서 작업을 시작한다. school로 해시 테이블을 이미 만들었으니 이를 이용할 차례이다.
+이제 나머지 테이블(크기가 좀더 큰 테이블: User)에서 작업을 시작한다. User 테이블을 순회하여 School과의 조인을 나타내는 값을 해시 함수 실행시킨다. 해시 함수 실행 결과 값이 해시테이블에 존재한다면 쿼리에 현재 데이터 열과 값이 같은 해시 테이블의 데이터를 결합시킨다. 그리고 결과 목록에 추가한다. User 테이블에서 순회를 마치면 결과 목록이 완성된다.
 
 나머지 테이블의 데이터를 하나하나 순회하면서 join에 사용된 값을 해시함수로 실행시켜 해시테이블의 매칭되는 값이 있는지 확인한다. 매칭되는 값이 있다면 그 둘 데이터를 결합하여 결과 목록에 추가한다.
 
-흐름을 코드로 파악하면 이렇다.
+대략 코드로 표현하면 이렇다.
 ```ts
-function hashJoin(Users, Schools) {
-    const smallerTable = findSmallerTable(Users, Schools);
-    const biggerTable = Users === smallerTable ? Schools : Users;
+const smallerTable = findSmallerTable(Users, Schools);
+const biggerTable = Users === smallerTable ? Schools : Users;
 
-    const hashTable = createHashTable(smallerTable);
+const hashTable = createHashTable(smallerTable);
 
-    for(const eachRow of biggerTable) {
-        const joinedTable = findMatchingDataFromOtherTable(hashFunc(eachRow.joinKey))
+for(const eachRow of biggerTable) {
+    const joinedTable = findMatchingDataFromOtherTable(hashFunc(eachRow.joinKey))
 
-        pushToJoinResult(joinedTable, eachRwo)
-    }
+    return pushToJoinResult(joinedTable, eachRwo)
 }
 ```
 
@@ -97,3 +89,22 @@ Hash Join은 순차 액세스를 하는데 non clustered 인덱스로 검색하�
 
 사실 join 쿼리 전략은 디비 자체적으로 대부분 최적화되있어 우리가 건드릴 일이 크지 않다.
 역시나 인덱스를 제대로 안갈어두는게 대부분의 문제이다.
+
+
+
+
+흐름을 코드로 파악하면 이렇다.
+```ts
+function hashJoin(Users, Schools) {
+    const smallerTable = findSmallerTable(Users, Schools);
+    const biggerTable = Users === smallerTable ? Schools : Users;
+
+    const hashTable = createHashTable(smallerTable);
+
+    for(const eachRow of biggerTable) {
+        const joinedTable = findMatchingDataFromOtherTable(hashFunc(eachRow.joinKey))
+
+        return pushToJoinResult(joinedTable, eachRwo)
+    }
+}
+```
