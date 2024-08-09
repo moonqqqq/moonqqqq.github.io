@@ -1,26 +1,5 @@
-# Nested Loop Join
-# Hash Join
-# Sort Merge Join
 
-- 개별 조인들을 사용해야하는 때, 사용하면 안되는 때
-- 개별 조인들 설명
-
-
-----
-
-
-# 랜덤 액세스 vs 순차 액세스
-조인 종류를 보기전에 먼저 랜덤 액세스, 순차 액세스가 뭔지 알아야한다.
-
-## 랜덤 액세스
-랜덤 액세스는 특정 행을 하나 찝어서 찾는 것이다. 
-"랜덤" 이라는 단어가 붙어서 이름과 내용이 잘매칭되지않는다. 데이터가 저장된 순서에 상관없이 접근한다고 해서 "랜덤"이 붙었다고 한다. (난 아직도 이름을 잘못지었다고 생각한다..) 그리고 메모리의 임의 위치에 저장된 데이터를 접근할 수 있음을 의미한다고 여러곳에서 설명한다.
-데이터베이스는 특정 행을 찾는 과정에서 "tree-search"가 실행되는데 이 과정이 여러번 진행되면 순차 액세스에 비해 훨씬 시간이 많이 든다. 예를 들어 <U>(캐시, 페이지 프리페칭이 없다고 가정하자.)</U> ID가 1,2,3 인 데이터를 가져와야할 때 랜덤액세스를 이용하게 되면 1,2,3 ID에 대한 랜덤엑세스가 3번 진행된다. (tree-search가 3번 진행된다.)
-
-## 순차 액세스
-반면에 순차 액세스는 디비가 데이터를 검색할 때 특정 행을 가져오는것이 아니라 한 뭉치의 데이터들을 가져오는 것을 활용한다. 디비에서 데이터는 페이지로 관리되고 페이지에는 순서대로 여러개의 데이터가 저장되어있다. ID가 1,2,3인 데이터가 같은 페이지에 저장돼있고, ID가 4,5,6인 데이터들이 같은 페이지에 저장돼있다고 보면 된다. 그렇기 때문에 ID === 1 인 데이터를 가져온다면 이미 2,3 데이터도 가져온것이기 때문에 ID === 1 데이터를 읽은 후 바로 **추가적인 tree-search없이** ID === 2 인 데이터에 접근할수 있다.
-
-
+Join을 포함한 쿼리가 실행될 때 데이터베이스 프로세서는 지금 디비 상황에 맞는 join 알고리즘을 선택해야 한다.
 이제 join algorithm 종류를 알아보자.
 
 ## Nested Loop Join
@@ -75,36 +54,113 @@ for(const eachRow of biggerTable) {
 
 ## Merge Join
 
+Merge 조인은 조인되는 두 테이블을 각자 조인키 값을 기준으로 정렬시킨다.
 
+Users
+| id    | name | scholl_Id |    
+| - | - | - |
+| 1  | kim    |  3|   
+| 2 | lee    |    1|   
+| 3    | choi    | 2|        
+| 4    | lim    |   6| 
 
+Schools
+| id    | name |
+| - | - |
+| 1  | seoul    |
+| 2 | busan    |
+| 4    | lala    |
 
-# 상황 별 장단점.
+위 값으로 Merge 조인을 한다면
 
-## 인덱스와 조인 쿼리.
+1. 개별 테이블이 공유하는 조인키로 정렬된다.
 
-Non clustered Index를 이용할 때는 hash join의 성능이 발휘되지않는다. 
-Hash Join은 순차 액세스를 하는데 non clustered 인덱스로 검색하게 되면 순차 액세스가 불가하다.
+Users
+| school_id    | name | id |    
+| - | - | - |
+| 1 | lee    |    2|   
+| 2    | choi    | 3| 
+| 3  | kim    |  1|          
+| 6    | lim    |   4| 
 
-## 어느상황에 써야하냐.
+Schools
+| id    | name |
+| - | - |
+| 1  | seoul    |
+| 2 | busan    |
+| 4    | lala    |
 
-사실 join 쿼리 전략은 디비 자체적으로 대부분 최적화되있어 우리가 건드릴 일이 크지 않다.
-역시나 인덱스를 제대로 안갈어두는게 대부분의 문제이다.
+(School id로 정렬된 두 테이블)
 
+2. 이제 두 테이블을 맨위 부터 비교하며 조인 키값이 같은 데이터들을 찾는다.
 
+첫번째 비교
 
+Users
+| school_id    | name | id | pointer |
+| - | - | - | -|
+| 1 | lee    |    2|   O
+| 2    | choi    | 3| 
+| 3  | kim    |  1|          
+| 6    | lim    |   4| 
 
-흐름을 코드로 파악하면 이렇다.
-```ts
-function hashJoin(Users, Schools) {
-    const smallerTable = findSmallerTable(Users, Schools);
-    const biggerTable = Users === smallerTable ? Schools : Users;
+Schools
+| id    | name | pointer |
+| - | - | - |
+| 1  | seoul    | O |
+| 2 | busan    |
+| 4    | lala    |
 
-    const hashTable = createHashTable(smallerTable);
+같은 키로 정렬된 상태이므로 바로바로 같은 조인키 값을 가진 데이터들을 찾을수 있다. 
+같은 포인터 위치의 데이터끼리 조인키를 비교한다. 맞다면 둘의 데이터를 병합하여 결과 데이터에 추가한다.
+그리고 두 테이블 모두 포인터를 다음번 데이터로 옮긴다.
 
-    for(const eachRow of biggerTable) {
-        const joinedTable = findMatchingDataFromOtherTable(hashFunc(eachRow.joinKey))
+두번째 비교
 
-        return pushToJoinResult(joinedTable, eachRwo)
-    }
-}
-```
+Users
+| school_id    | name | id | pointer |
+| - | - | - | -|
+| 2    | choi    | 3| O
+| 3  | kim    |  1|        
+| 6    | lim    |   4| 
+
+Schools
+| id    | name | pointer |
+| - | - | - |
+| 2 | busan    | O
+| 4    | lala    |
+
+두번째 비교에서도 바로 포인터에 있는 데이터들이 조인키가 같다. 결과 목록에 병합하여 추가한다.
+
+세번째 비교
+
+Users
+| school_id    | name | id | pointer |
+| - | - | - | -|
+| 3  | kim    |  1| O
+| 6    | lim    |   4| 
+
+Schools
+| id    | name | pointer |
+| - | - | - |
+| 4    | lala    | O
+
+세번째에 와서야 포인터에있는 값들이 조인키가 맞지않다. 이럴 때는 조인키를 비교하여 작은 값을 가진쪽에서 포인터를 다음으로 옮긴다.
+
+네번째 비교
+
+Users
+| school_id    | name | id | pointer |
+| - | - | - | -|
+| 3  | kim    |  1| 
+| 6    | lim    |   4|  O
+
+Schools
+| id    | name | pointer |
+| - | - | - |
+| 4    | lala    | O
+
+이번에도 포인터들의 조인값을 비교해봤지만 같지 않다. 그런데 이번에는 조인값이 작은 쪽에서 더이상 다음 값으로 옮길수가 없다. 이러면 더이상 매칭할 데이터가 없는 것이기 때문에 탐색 과정이 끝난다. 그리고 병합된 데이터를 리턴한다.
+
+이때 Join 방식에 따라(inner, left, right, full etc..) 매칭되지않은 데이터들에 대해 null을 한쪽 테이블 데이터는 null을 설정해서 결과값에 추가할지 두 테이블 데이터 모두 보여주지않을지 결정하게 된다.
+

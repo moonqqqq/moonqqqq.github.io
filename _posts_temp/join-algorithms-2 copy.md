@@ -1,3 +1,49 @@
+Join 알고리즘을 하기전에 먼저 액세스 방식부터 확인하고 가자.
+
+# 랜덤 액세스 vs 순차 액세스
+조인 종류를 보기전에 먼저 랜덤 액세스, 순차 액세스가 뭔지 알아야한다.
+
+## 랜덤 액세스
+랜덤 액세스는 특정 행을 하나 찝어서 찾는 것이다. 
+"랜덤" 이라는 단어가 붙어서 이름과 내용이 잘매칭되지않는다. 데이터가 저장된 순서에 상관없이 접근한다고 해서 "랜덤"이 붙었다고 한다. (난 아직도 이름을 잘못지었다고 생각한다..) 그리고 메모리의 임의 위치에 저장된 데이터를 접근할 수 있음을 의미한다고 여러곳에서 설명한다.
+데이터베이스는 특정 행을 찾는 과정에서 "tree-search"가 실행되는데 이 과정이 여러번 진행되면 순차 액세스에 비해 훨씬 시간이 많이 든다. 예를 들어 <U>(캐시, 페이지 프리페칭이 없다고 가정하자.)</U> ID가 1,2,3 인 데이터를 가져와야할 때 랜덤액세스를 이용하게 되면 1,2,3 ID에 대한 랜덤엑세스가 3번 진행된다. (tree-search가 3번 진행된다.)
+
+## 순차 액세스
+반면에 순차 액세스는 디비가 데이터를 검색할 때 특정 행을 가져오는것이 아니라 한 뭉치의 데이터들을 가져오는 것을 활용한다. 디비에서 데이터는 페이지로 관리되고 페이지에는 순서대로 여러개의 데이터가 저장되어있다. ID가 1,2,3인 데이터가 같은 페이지에 저장돼있고, ID가 4,5,6인 데이터들이 같은 페이지에 저장돼있다고 보면 된다. 그렇기 때문에 ID === 1 인 데이터를 가져온다면 이미 2,3 데이터도 가져온것이기 때문에 ID === 1 데이터를 읽은 후 바로 **추가적인 tree-search없이** ID === 2 인 데이터에 접근할수 있다.
+
+
+
+# 상황 별 장단점.
+
+## 인덱스와 조인 쿼리.
+
+Non clustered Index를 이용할 때는 hash join의 성능이 발휘되지않는다. 
+Hash Join은 순차 액세스를 하는데 non clustered 인덱스로 검색하게 되면 순차 액세스가 불가하다.
+
+## 어느상황에 써야하냐.
+
+사실 join 쿼리 전략은 디비 자체적으로 대부분 최적화되있어 우리가 건드릴 일이 크지 않다.
+역시나 인덱스를 제대로 안갈어두는게 대부분의 문제이다.
+
+
+
+
+흐름을 코드로 파악하면 이렇다.
+```ts
+function hashJoin(Users, Schools) {
+    const smallerTable = findSmallerTable(Users, Schools);
+    const biggerTable = Users === smallerTable ? Schools : Users;
+
+    const hashTable = createHashTable(smallerTable);
+
+    for(const eachRow of biggerTable) {
+        const joinedTable = findMatchingDataFromOtherTable(hashFunc(eachRow.joinKey))
+
+        return pushToJoinResult(joinedTable, eachRwo)
+    }
+}
+```
+
 사실 Join 알고리즘을 튜닝할 일은 거의없지않나 싶다. 상용화되고 있는 데이터베이스들은 이미 최적화가 충분히 되어있다. join에 관해서도 문제가 발생하는 이유는 역시나 우리가 필요한 인덱스를 제대로 설정해놓지 않은 탓이 크다. 그래도 explain 결과를 볼때 도움이 되니 겅부해보자.
 
 
