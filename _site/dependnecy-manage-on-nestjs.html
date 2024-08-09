@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<!-- Meta -->
+	<meta charset="UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+	<meta name="generator" content="Jekyll">
+
+	<title>Nest.js 모듈 구조 관리 (Avoiding circular dependency)</title>
+  <meta name="description" content="전체 코드 구조를 깔끔히하기.">
+
+	<!-- CSS & fonts -->
+	<link rel="stylesheet" href="/css/main.css">
+
+	<!-- RSS -->
+	<link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed" />
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/png" href="img/favicon.png">
+
+</head>
+
+
+<body>
+	<div id="wrap">
+	  	
+	  	<!-- Navigation -->
+	  	<nav id="nav">
+	<div id="nav-list">
+		<a href="//">Home</a>
+
+		<!-- Nav pages -->
+	  
+	    
+	  
+	    
+	      <a href="//about" title=""></a>
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+    
+    <!-- Nav links -->
+	  <a href="https://github.com/moonqqqq" aria-label="Homepage" class="footer-octicon" title="GitHub">
+    <svg aria-hidden="true" class="octicon octicon-mark-github" height="20" version="1.1" viewBox="0 0 16 16" width="24"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+</svg>
+</a>
+
+	</div>
+  
+  <!-- Nav footer -->
+	
+	  <footer>
+	
+	<span>version 1.0.0</span>
+
+</footer>
+	
+
+</nav>
+
+    
+    <!-- Icon menu -->
+	  <a id="nav-menu">
+	  	<div id="menu"></div>
+	  </a>
+
+      <!-- Header -->
+      
+        <header id="header" class="parent justify-spaceBetween">
+  <div class="inner w100 relative">
+    <span class="f-left">  
+      <a href="//">
+        <h1>
+          <span>김문규블로그</span>
+        </h1>
+      </a>
+    </span>
+    <span id="nav-links" class="absolute right bottom">
+      <!-- Nav pages -->
+	    
+	      
+	    
+	      
+	        <a href="/about" title=""></a>
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+      
+      <!-- Nav links -->
+	    <a href="https://github.com/moonqqqq" aria-label="Homepage" class="footer-octicon" title="GitHub">
+    <svg aria-hidden="true" class="octicon octicon-mark-github" height="20" version="1.1" viewBox="0 0 16 16" width="24"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+</svg>
+</a>
+
+    </span>
+  </div>
+</header>
+
+
+
+
+      
+
+    <!-- Main content -->
+	  <div id="container">
+		  
+		<main>
+
+			<article id="post-page">
+	<h2>Nest.js 모듈 구조 관리 (Avoiding circular dependency)</h2>		
+	<time datetime="2023-06-30T00:00:00+09:00" class="by-line">30 Jun 2023</time>
+	<div class="content">
+
+		<p>어떤 아키텍쳐를 쓰던 DI(dependency injection)는 대부분 이용된다. Nest.js의 기본 구조도 그렇다.
+그런데 DI로 개발하다보면 의존성이 꼬이는 일이 발생하는 경우가 있다. 대부분이  <strong>circular dependency</strong>로 나타난다.
+이 때 <em>lazy loading</em>을 이용해서 circular dependency 발생 없이 개발할수도 있지만 상호의존은 최악의 구조이기 때문에 최대한 불가피한 경우에만 써야한다.</p>
+
+<p>내가 관리하는 프로젝트들에서 상호 의존을 피하기 위한 규칙들은 아래와 같다.</p>
+
+<h2 id="1-테이블-마다-모듈을-만든다는-생각부터-버려야한다">1. 테이블 마다 모듈을 만든다는 생각부터 버려야한다.</h2>
+<p>나 또한 개발 초기에는 대부분의 백엔드 강의가 CRUD 강의였기때문에 테이블과 거의 1대1 매칭이 됐다. 그렇게 배웠다보니 나도 실무에서 그렇게 해왔다. 하지만 어느 순간 상호 의존하는 상황이 발생했다.(지금도 꽤 발생한다..) 가장 큰 이유는 개별 모듈이 너무 커졌기 때문이다.</p>
+
+<h3 id="종류에-따라-분리">종류에 따라 분리</h3>
+<p><img src="/img/writing-images/user-module.png" alt="1" />
+User, Order, Product 이 3가지의 테이블을 가진 서비스를 생각해보자. 모듈을 테이블대로 3개만 만들어서 이용한다면 초기에는 괜찮았겠지만 서비스가 커질수록 기능이 아주 많아지면서 개별 모듈의 기능들 또한 많아진다(책임이 커진다).
+예를 들면, User의 종류도 처음엔 한 종류였다. 그런데 한달뒤에 비로그인 유저가 주문할수 있는 기능도 생겨날수 있다. 혹은 유저 등급에 따라 기능이 분리될수도 있게 된다.(e.g. PaidUser, UnpaidUser).</p>
+
+<blockquote>
+  <p>“기능이 많다” 라는 건 “다른 모듈의 기능을 필요할(의존할) 확률이 높아진다”와 같은 말이다.</p>
+</blockquote>
+
+<p>PaidUser, UnpaidUser, NonLoginedUser 처럼 여러개로 나눠 모듈을 관리한다면 <strong>PaidUser에서만 결제 정보에 대해 의존하면 된다.</strong> UnpaidUser와 NonLoginedUser 모듈에서는 결제 정보를 의존하지 않아도 된다. 반대로 UnpaidUser에서만 필요한 모듈은 Unpaid모듈에서만 의존하고 다른 곳에서는 의존하지 않는다. <strong>정말 필요한 기능에서만 의존성을 주입하게 되는 구조가 성립된다.</strong></p>
+
+<p><strong>하지만 한 뿌리에서 나온 모듈들이다보니 공통되는 기능들이 꽤나 존재하게 된다. 그럴 때는 User 모듈을 공통 기능/API 모듈로 사용한다.</strong> 혹은 좀 더 명시적이고 싶다면 UserCore, UserShare 모듈로 이름 지어도 좋다.</p>
+
+<h3 id="혼합된-형식으로-만들어-분리">혼합된 형식으로 만들어 분리</h3>
+<p><img src="/img/writing-images/order-and-user-module.png" alt="1" />
+한뿌리에서 나온 모듈을 종류에 따라 분리하는 방법이 모듈 관리의 절반을 차지한다면, 나머지 절반은 <strong><em>혼합된 형식</em></strong>이 차지한다. User종류들과 Order이 합쳐진 UserOrder, NonUserOrder 모듈처럼 나뉠수 있다. <u>쇼핑몰에서 흔히 볼수 있는 비회원 구매 기능을 생각하면 좋다.</u></p>
+
+<p>두가지 데이터를 혼합한 모듈을 만들면 모듈의 기능이 분리되서 관리가 쉬워진다. 나누지 않았다면 Order 모듈에서 모두 책임을 져야하니 말이다.</p>
+
+<h2 id="2-방향-또한-중요하다">2. 방향 또한 중요하다.</h2>
+<p>User, Order에서 둘의 관계는 User가 Order를 여러개 가진다. <strong>일대다(완벽히 일대다는아니지만)와 같은 관계에서는 ‘다’가 ‘일’을 의존하도록 해야한다.</strong> 논리적으로 대부분이 그렇다. Order API를 개발할 때 User 정보를 가져올 확률이 높지 User API에서 Order 정보를 가져올 일은 그리 많지않다. 있을수 있지만 비율적으로 비교가 불가하다. 그러니 ‘다’ 방향에서 ‘일’을 의존해야한다. ‘일’에서 ‘다’를 의존하게 된다면 기존 구조가 불량할 확률이 높다.</p>
+
+<h2 id="3-1-to-1은-보통-하나의-모듈에서-처리해도-되긴하는데">3. 1 to 1은 보통 하나의 모듈에서 처리해도 되긴하는데..</h2>
+<p>이미 다들 그렇게 하시겠지만.. User, Profile이 있다면 User 모듈에서 Profile에 대한 모든 기능을 처리하면된다. 그런데 만약에 Profile 기능이 꽤나 많다면 UserProfile이란 혼합 모듈을 만들면 더 깔끔해진다.</p>
+
+<p>여기서 둘의 차이점을 생각해보고 지나가자. 
+“1. Order모듈에서 Receipt모듈 처리” vs “2. 개별 모듈로 분리”</p>
+
+<p>1의 장점은 URL이 깔끔해진다. 
+“GET order/:id/receipt” vs “GET receipt?orderId=123” 이렇게 비교하면 전자가 직관적이고 깔끔하다. 그러나 URL의 직관성도 중요하긴하지만, 백엔드 구조의 깔끔함이 우선임을 생각하면(추후에 확장가능성까지 생각한다면) 후자가 훨씬 좋은 선택지라고 할수 있다.</p>
+
+<h2 id="4-작은-모듈을-유지해야-변경에-용이하다">4. 작은 모듈을 유지해야 변경에 용이하다.</h2>
+<p>위 다른 이유들도 중요하지만 모든 것이 계획대로 되지만은 않는다. 바쁘다보면 실수하고 안바빠도 실수한다. 그러려면 변경이 쉬워야하는데 큰 모듈들로 구조가 유지된다면 구조를 잘못짰을 때 변경하기가 쉽지않다. 여러 모듈로 나뉜 상태라면 각 모듈마다 기능이 적을테니 의존성이 꼬였을 때 새로운 모듈로 이전하기가 쉬워진다.</p>
+
+<h2 id="5-여러군데서-쓰이는-기능은-share-모듈로">5. 여러군데서 쓰이는 기능은 Share 모듈로.</h2>
+<p>여러 코드베이스에서 Shared, Common 같은 폴더를 봤을 것이다. 이 모듈들은 최대한 다른 모듈을 의존하지않은 상태로 유지된다. 그리고 모든 다른 모듈들이 이 모듈을 의존하는 형태로 관리된다. 한군데 모듈에서만 쓰이는 기능이 아니라면 바로 이런 공통 모듈에 박아두면 Circular dependency가 발생할 확률이 줄어든다.</p>
+
+		
+	</div>
+	<div class="comment">
+		<script src="https://utteranc.es/client.js"
+        repo="moonqqqq/blog-comment"
+        issue-term="pathname"
+        label="comments"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
+	</div>
+</article>
+
+
+
+	  </main>
+		
+		  <!-- Pagination links -->
+      
+
+	  </div>
+	    
+	    <!-- Footer -->
+	    <footer><span>@2017 - Monochrome</span></footer>
+
+
+	    <!-- Script -->
+      <script src="/js/main.js"></script>	
+
+
+	</div>
+</body>
+</html>

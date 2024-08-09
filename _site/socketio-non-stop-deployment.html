@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<!-- Meta -->
+	<meta charset="UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+	<meta name="generator" content="Jekyll">
+
+	<title>Socket.io 무중단 배포</title>
+  <meta name="description" content="Socket.io 무중단 배포">
+
+	<!-- CSS & fonts -->
+	<link rel="stylesheet" href="/css/main.css">
+
+	<!-- RSS -->
+	<link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed" />
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/png" href="img/favicon.png">
+
+</head>
+
+
+<body>
+	<div id="wrap">
+	  	
+	  	<!-- Navigation -->
+	  	<nav id="nav">
+	<div id="nav-list">
+		<a href="//">Home</a>
+
+		<!-- Nav pages -->
+	  
+	    
+	  
+	    
+	      <a href="//about" title=""></a>
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+    
+    <!-- Nav links -->
+	  <a href="https://github.com/moonqqqq" aria-label="Homepage" class="footer-octicon" title="GitHub">
+    <svg aria-hidden="true" class="octicon octicon-mark-github" height="20" version="1.1" viewBox="0 0 16 16" width="24"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+</svg>
+</a>
+
+	</div>
+  
+  <!-- Nav footer -->
+	
+	  <footer>
+	
+	<span>version 1.0.0</span>
+
+</footer>
+	
+
+</nav>
+
+    
+    <!-- Icon menu -->
+	  <a id="nav-menu">
+	  	<div id="menu"></div>
+	  </a>
+
+      <!-- Header -->
+      
+        <header id="header" class="parent justify-spaceBetween">
+  <div class="inner w100 relative">
+    <span class="f-left">  
+      <a href="//">
+        <h1>
+          <span>김문규블로그</span>
+        </h1>
+      </a>
+    </span>
+    <span id="nav-links" class="absolute right bottom">
+      <!-- Nav pages -->
+	    
+	      
+	    
+	      
+	        <a href="/about" title=""></a>
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+      
+      <!-- Nav links -->
+	    <a href="https://github.com/moonqqqq" aria-label="Homepage" class="footer-octicon" title="GitHub">
+    <svg aria-hidden="true" class="octicon octicon-mark-github" height="20" version="1.1" viewBox="0 0 16 16" width="24"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+</svg>
+</a>
+
+    </span>
+  </div>
+</header>
+
+
+
+
+      
+
+    <!-- Main content -->
+	  <div id="container">
+		  
+		<main>
+
+			<article id="post-page">
+	<h2>채팅서버 무중단 배포(Socket.io)</h2>		
+	<time datetime="2023-07-23T00:00:00+09:00" class="by-line">23 Jul 2023</time>
+	<div class="content">
+
+		<p>채팅 서버 무중단 배포 방식을 정리하고 가자.</p>
+
+<p>BlueGreen, Canary과 같은 배포 방식에 관련된 글이라기보다는 무중단 배포에 있어 채팅 서버의 어떤 점들을 유의해야하는지에 대한 글이겠다. (Socket.io를 기준으로)</p>
+
+<p>Socket 배포에 있어서 중요한 건 “client-server간의 관련 데이터 관리”, “client-server connection 관리”이 두가지가 되겠다.</p>
+
+<h2 id="socketio-관련-데이터-관리">socket.io 관련 데이터 관리.</h2>
+<p>socket.io에서는 실시간 통신을 위해 필요한 데이터들이 몇가지 있다. 보통 session이라고 한다.</p>
+
+<p>SocketId: 기본적으로 클라-서버가 연결됐을 때 만들어진다.
+Namespaces: 소켓에서 구획을 나눠서 이용할수 있게 해주는 기준이다. 보통 기능에 따라 나눈다. (e.g. normal-chat, group-chat)
+Rooms: namespace안에서 한번 더 구분되는 단위라고 생각하면 된다. (e.g. normal-chat(namespace)중에서 1번 room)
+Event Handler: 특정 이벤트에 대한 행동</p>
+
+<p>socket.io에서는 session들을 <strong>adapter</strong>라는 도구로 관리한다. 하나의 인스턴스에서 socket.io가 작동한다면 기본적으로 memory adapter로 관리된다. 인스턴스 개수가 두개가 될때부터는 데이터 동기화를 위해 외부 저장장치로 adapter를 설정해야한다. redis, db등 여러가지가 있고 redis가 주로 많이 쓰인다. 
+socketId, namespace등이 adapter를 통해 실시간으로 동기화되어 데이터를 목적지 client들에게 전달할 수 있게된다.
+실시간 동기화되는 데이터저장소가 있기때문에 업데이트시에도 기존 상태 데이터가 잘 보관될수 있게 된다.</p>
+
+<h2 id="connection-관리">Connection 관리.</h2>
+<p>Socket.io로 연결된 클라이언트는 socketId를 받게 된다. 서버쪽에서는 socketId를 adapter에 저장해두어 커낵션 정보를 관리한다. socket.io 서버는 아래와 같은 형식으로 데이터들을 저장한다.</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+</pre></td><td class="rouge-code"><pre><span class="nx">sids</span><span class="p">:</span> <span class="nb">Map</span><span class="o">&lt;</span><span class="nx">SocketId</span><span class="p">,</span> <span class="nb">Set</span><span class="o">&lt;</span><span class="nx">Room</span><span class="o">&gt;&gt;</span> <span class="c1">// 소켓ID와 room 매칭 데이터</span>
+
+<span class="c1">// 예시</span>
+<span class="nx">sids</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nl">socketId1</span><span class="p">:</span> <span class="p">[</span>
+        <span class="nx">roomId1</span><span class="p">,</span>
+        <span class="nx">roomId2</span>
+    <span class="p">],</span>
+    <span class="nx">socketId2</span><span class="p">:</span> <span class="p">[</span>
+        <span class="nx">roomId2</span><span class="p">,</span>
+        <span class="nx">roomId3</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+
+<span class="nl">rooms</span><span class="p">:</span> <span class="nb">Map</span><span class="o">&lt;</span><span class="nx">Room</span><span class="p">,</span> <span class="nb">Set</span><span class="o">&lt;</span><span class="nx">SocketId</span><span class="o">&gt;&gt;</span> <span class="c1">// room과 소켓ID 매칭 데이터</span>
+
+<span class="c1">// 예시</span>
+<span class="nx">rooms</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nl">roomId1</span><span class="p">:</span> <span class="p">[</span>
+        <span class="nx">socketId1</span><span class="p">,</span>
+        <span class="nx">socketId2</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>무중단 배포가 시작되고 한 인스턴스가 업데이트 된다면 해당 인스턴스와 연결된 클라이언트들은 socket 연결이 끊긴다. 그런데 Socket.io 자체에는 자동 재연결 기능이 구현되어있다. 연결이 끊긴다면 바로 재연결을 시도하고 재연결이 완료되면 새로운 socketId를 받게 된다.
+(재연결 시도 할 때, 로드밸런서의 도움으로 지금 업데이트중인 인스턴스가 아니라 이용가능한/살아있는 다른 인스턴스와 연결이 된다.)</p>
+
+<p>이때 우리가 서버쪽에 추가적인 작업을 하나 셋팅해둬야한다. <strong>“reconnection” 이벤트가 발생했을 때 유저가 이용중이던 채팅방에 다시 join() 시켜주는 기능이 필요하다.</strong>
+우선 중앙 저장소에 현재 접속되어있는 채팅방-유저 데이터를 저장하고 있어야한다. 채팅방1: [유저1, 유저2, 유저3] 이런 데이터를 실시간으로 유지하고 있다면 reconnection 이벤트가 발생했을 때 해당 유저가 이용중이던 room에 바로 다시 join() 시켜줄수 있게 된다.
+이렇게 된다면 <strong><em>socket 서버에 다시 연결하는 시간 + 내가 이용중인 채팅방 정보 가져오는 시간 + 해당 채팅방으로 다시 join() 하는 시간 으로 중단 시간이 단축된다.</em></strong></p>
+
+
+		
+	</div>
+	<div class="comment">
+		<script src="https://utteranc.es/client.js"
+        repo="moonqqqq/blog-comment"
+        issue-term="pathname"
+        label="comments"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
+	</div>
+</article>
+
+
+
+	  </main>
+		
+		  <!-- Pagination links -->
+      
+
+	  </div>
+	    
+	    <!-- Footer -->
+	    <footer><span>@2017 - Monochrome</span></footer>
+
+
+	    <!-- Script -->
+      <script src="/js/main.js"></script>	
+
+
+	</div>
+</body>
+</html>

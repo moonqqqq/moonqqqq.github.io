@@ -131,9 +131,41 @@
 	
 
 	  <li class="post">
-	  	<h2><a href="/exception-6">Nest.js 구조화/계층화된 Exception 관리.</a></h2>
-      <time datetime="2023-12-20T00:00:00+09:00" class="by-line"> <i>20 Dec 2023</i> </time>
-	  	<p>목차 Exception의 내용 계층화/구조화 Layer2 Layer3 Layer4 발생시킨 Exception 처리 - 익셉션 필터 구조화 계층별 Third party library Unhandled exception 1. Exception의 내용 구조화에 들어가기전에 잠시 정리하고 넘어가면. Exception은 클라이언트에게 API 이용 가이드가 되어야한다. 그러기 위해 형식이 고정돼어야 한다. 디테일해야 하며, 클라이언트가 이용할수 있는 단서를 주는 것도 좋다. 내가 이용하는...</p>
+	  	<h2><a href="/from-the-libuv-server-series-2">API 서버가 데이터를 받기까지 [epoll] - 서버가 작동하는 흐름 2</a></h2>
+      <time datetime="2024-01-23T00:00:00+09:00" class="by-line"> <i>23 Jan 2024</i> </time>
+	  	<p>시리즈 목차 1.서버가 데이터를 받기까지 [운영체제에서] (현재글) 2.서버가 데이터를 받기까지 [libuv - epoll] 3.서버가 받은 데이터가 어떻게 처리되는지. Node.js만의 방식이 어떤지 정리한다. 4.Node.js만의 방식을 하나하나 조금 더 디테일하게 - Event loop, Libuv, V8, JS 이전 단계에서 데이터가 “receive socket buffer”에 도착했다. 이제 Node.js 서버가 데이터를 가져와서 처리해야한다. 데이터를 가져오는 일을...</p>
+	  </li>
+
+    
+
+	  <li class="post">
+	  	<h2><a href="/before-arriving-server-server-series-1">API 서버가 데이터를 받기까지 (운영체제에서) - 서버가 작동하는 흐름 1</a></h2>
+      <time datetime="2024-01-02T00:00:00+09:00" class="by-line"> <i>02 Jan 2024</i> </time>
+	  	<p>시리즈 목차 (현재글) 1.서버가 데이터를 받기까지 [운영체제에서] 2.서버가 데이터를 받기까지 [libuv] 3.서버가 받은 데이터가 어떻게 처리되는지. Node.js만의 방식이 어떤지 정리한다. 4.Node.js만의 방식을 하나하나 조금 더 디테일하게 - Event loop, Libuv, V8, JS API 서버가 데이터를 받기까지. 우리가 만든 Node.js 서버가 데이터를 받기위해선 포트 번호(ex. 3000, 8080)와 바인딩되어야한다. 그래야만 운영체제가 node.js...</p>
+	  </li>
+
+    
+
+	  <li class="post">
+	  	<h2><a href="/socketio-non-stop-deployment">채팅서버 무중단 배포(Socket.io)</a></h2>
+      <time datetime="2023-07-23T00:00:00+09:00" class="by-line"> <i>23 Jul 2023</i> </time>
+	  	<p>채팅 서버 무중단 배포 방식을 정리하고 가자. BlueGreen, Canary과 같은 배포 방식에 관련된 글이라기보다는 무중단 배포에 있어 채팅 서버의 어떤 점들을 유의해야하는지에 대한 글이겠다. (Socket.io를 기준으로) Socket 배포에 있어서 중요한 건 “client-server간의 관련 데이터 관리”, “client-server connection 관리”이 두가지가 되겠다. socket.io 관련 데이터 관리. socket.io에서는 실시간 통신을 위해 필요한 데이터들이...</p>
+	  </li>
+
+    
+
+	  <li class="post">
+	  	<h2><a href="/dependnecy-manage-on-nestjs">Nest.js 모듈 구조 관리 (Avoiding circular dependency)</a></h2>
+      <time datetime="2023-06-30T00:00:00+09:00" class="by-line"> <i>30 Jun 2023</i> </time>
+	  	<p>어떤 아키텍쳐를 쓰던 DI(dependency injection)는 대부분 이용된다. Nest.js의 기본 구조도 그렇다. 그런데 DI로 개발하다보면 의존성이 꼬이는 일이 발생하는 경우가 있다. 대부분이 circular dependency로 나타난다. 이 때 lazy loading을 이용해서 circular dependency 발생 없이 개발할수도 있지만 상호의존은 최악의 구조이기 때문에 최대한 불가피한 경우에만 써야한다. 내가 관리하는 프로젝트들에서 상호 의존을 피하기 위한...</p>
+	  </li>
+
+    
+
+	  <li class="post">
+	  	<h2><a href="/join-algorithms-1">Join 알고리즘 대표적 3가지</a></h2>
+      <time datetime="2023-01-03T00:00:00+09:00" class="by-line"> <i>03 Jan 2023</i> </time>
+	  	<p>시리즈 목차 (현재글) 1. Join 알고리즘의 종류 2. Join 알고리즘 최적화 Join을 포함한 쿼리가 실행될 때 데이터베이스 프로세서는 지금 디비 상황에 맞는 join 알고리즘을 선택해야 한다. 대표적인 3가지를 알아보자. Nested Loop Join 이름 그대로 중첩 loop 방식으로 조건에 맞는 데이터를 찾는다. 중첩 for문이라고 생각하면 된다. 첫번째 테이블에서 데이터를 하나 선택하고...</p>
 	  </li>
 
     

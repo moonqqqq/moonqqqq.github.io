@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<!-- Meta -->
+	<meta charset="UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+	<meta name="generator" content="Jekyll">
+
+	<title>API 서버가 데이터를 받기까지 (운영체제에서) - 서버가 작동하는 흐름 1</title>
+  <meta name="description" content="클라이언트의 요청이 서버도착하기 전까지의 흐름.">
+
+	<!-- CSS & fonts -->
+	<link rel="stylesheet" href="/css/main.css">
+
+	<!-- RSS -->
+	<link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed" />
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/png" href="img/favicon.png">
+
+</head>
+
+
+<body>
+	<div id="wrap">
+	  	
+	  	<!-- Navigation -->
+	  	<nav id="nav">
+	<div id="nav-list">
+		<a href="//">Home</a>
+
+		<!-- Nav pages -->
+	  
+	    
+	  
+	    
+	      <a href="//about" title=""></a>
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+    
+    <!-- Nav links -->
+	  <a href="https://github.com/moonqqqq" aria-label="Homepage" class="footer-octicon" title="GitHub">
+    <svg aria-hidden="true" class="octicon octicon-mark-github" height="20" version="1.1" viewBox="0 0 16 16" width="24"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+</svg>
+</a>
+
+	</div>
+  
+  <!-- Nav footer -->
+	
+	  <footer>
+	
+	<span>version 1.0.0</span>
+
+</footer>
+	
+
+</nav>
+
+    
+    <!-- Icon menu -->
+	  <a id="nav-menu">
+	  	<div id="menu"></div>
+	  </a>
+
+      <!-- Header -->
+      
+        <header id="header" class="parent justify-spaceBetween">
+  <div class="inner w100 relative">
+    <span class="f-left">  
+      <a href="//">
+        <h1>
+          <span>김문규블로그</span>
+        </h1>
+      </a>
+    </span>
+    <span id="nav-links" class="absolute right bottom">
+      <!-- Nav pages -->
+	    
+	      
+	    
+	      
+	        <a href="/about" title=""></a>
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+      
+      <!-- Nav links -->
+	    <a href="https://github.com/moonqqqq" aria-label="Homepage" class="footer-octicon" title="GitHub">
+    <svg aria-hidden="true" class="octicon octicon-mark-github" height="20" version="1.1" viewBox="0 0 16 16" width="24"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+</svg>
+</a>
+
+    </span>
+  </div>
+</header>
+
+
+
+
+      
+
+    <!-- Main content -->
+	  <div id="container">
+		  
+		<main>
+
+			<article id="post-page">
+	<h2>API 서버가 데이터를 받기까지 (운영체제에서) - 서버가 작동하는 흐름 1</h2>		
+	<time datetime="2024-01-02T00:00:00+09:00" class="by-line">02 Jan 2024</time>
+	<div class="content">
+
+		<h4 id="시리즈-목차">시리즈 목차</h4>
+<p><a href="https://moonqqqq.github.io/before-arriving-server-server-series-1"><u>(현재글) 1.서버가 데이터를 받기까지 [운영체제에서]</u></a> <br />
+<a href="https://moonqqqq.github.io/from-the-libuv-server-series-2">2.서버가 데이터를 받기까지 [libuv]</a> <br />
+3.서버가 받은 데이터가 어떻게 처리되는지. Node.js만의 방식이 어떤지 정리한다. <br />
+4.Node.js만의 방식을 하나하나 조금 더 디테일하게 - Event loop, Libuv, V8, JS</p>
+
+<hr />
+<p><br /></p>
+
+<h1 id="api-서버가-데이터를-받기까지">API 서버가 데이터를 받기까지.</h1>
+<p>우리가 만든 Node.js 서버가 데이터를 받기위해선 포트 번호(ex. 3000, 8080)와 바인딩되어야한다. 그래야만 운영체제가 node.js 서버 프로그램이 어디 있는지 알수있고 데이터를 보낼수 있다.
+이제 포트와 연결된 상태로 서버가 <strong>실행</strong>중이라면 서버에서는 데이터를 받을 준비가 됐다.</p>
+
+<p>송신자측을 이야기해보자.
+송신자(클라이언트)는 데이터를 보내기전에 서버와 연결을 만들어야한다. 이때 TCP 연결이 필요하다. TCP 연결은 3 way handeshake로 만들어진다. <strong>3 way handshake가 완료되면 클라이언트와 서버에 socket이 생긴다.</strong> 이 소켓(socket)이라는 건 connection이 가능하다는 증빙이라고 생각하면 된다. 소켓의 내용물는 클라이언트와 서버 양측 네트워크 정보[송신자 IP, 송신자 port, 수신자 IP, 수신자 port] 4가지이다. 이 증빙이 있으면 클라이언트에서 서버로 데이터를 보낼수 있게 된다.</p>
+
+<p>송신자가 데이터를 보냈을 때 수신자측에서 소켓을 가지고 있지 않은 상태라면(소켓데이터가 유실되거나) 연결 리셋(TCP reset) 응답이 온다. 이때 송신자는 다시 3 way handshake을 진행해야한다. 그 뒤 양쪽에 소켓이 생성되면 데이터를 보낼수 있다.</p>
+
+<p>클라이언트와 서버간의 연결이 확보되면 아래 layer들에서 데이터에 여러가지 정보를 덧붙인다. <br /></p>
+<ul>
+  <li>TCP layer는 데이터 전송의 안정성 관련 정보,<br /></li>
+  <li>IP layer는 목적지 ip까지 잘도착하는데에 필요한 정보,<br /></li>
+  <li>마지막으로 Data link layer는 목적지 IP에서 서버가 작동하고 있는 구체적인 하드웨어 정보를 담당한다. 그리고 네트워크에서 움직일수 있는 형태의 데이터로의 변환까지 책임진다.</li>
+</ul>
+
+<p>TCP/IP stack에 대해 아주 짧게 정리하고 넘어가보자. (디테일에 대해선 다른 좋은글들이 많다. <a href="https://d2.naver.com/helloworld/47667">네이버 D2 TCP/IP 네트워크 스택 이해하기</a>)</p>
+
+<h2 id="application-layer">Application layer</h2>
+<p>우리가 쓰는 chrome 등 모든 프로그램/앱이 application이다. application layer에서는 클라이언트와 서버가 소통하기로 한 방식에 맞게 보내는 데이터를 맞춰주는 역할을 한다. http, ftp등이 있는데 이들 모두 커뮤티케이션하는 방식이 다르므로 개별 구조에 맞추는 작업이다. Node.js에서는 http library가 이 일을 해준다.</p>
+
+<p>데이터를 규약에 맞게 만들고 나면 위에서 얘기한 <strong>socket</strong>으로 데이터를 보낸다. 소켓의 <strong>“write socket buffer”</strong> 으로 보내게 되는데 이때 system call을 전송이 이루어진다.</p>
+
+<p><br /></p>
+
+<h2 id="tcp-layer">TCP layer</h2>
+<p>write socket buffer에 데이터가 오게 되면 차례차례 필요한 데이터를 붙여준다. TCP layer는 데이터 전송의 안정성을 높여주는 것이 목적이라고 했다. 그래서 붙여주는 데이터들이 “순서 데이터”, “확인 응답 데이터”, “포트 번호”등이다.</p>
+
+<h3 id="순서-데이터">순서 데이터</h3>
+<p>보통 클라이언트 요청이 하나의 패킷으로 전달되지않는다. 여러개로 나뉘어서 보내지는데, 네트워크 상태에 따라 순서대로 보내지지 않을 때가 많다. 이럴 때 순서 데이터를 이용한다. 받는 곳(서버)에서 데이터를 순서대로 다시 조립할수 있게 해준다. 그리고 순서 데이터로 빠진 데이터가 있는지도 알수 있기때문에 만약에 누락된 데이터가 있다면 이를 이용해 클라이언트에 다시 요청하는 프로세스가 쉽게 이루어진다.</p>
+
+<h3 id="포트-번호">포트 번호</h3>
+<p>목적지 컴퓨터의 어떤 프로그램으로 가야하는지에 대한 정보이다. 소켓은 송신자 IP, 송신자 포트번호,수신자 IP, 수신자 포트번호 로 구성된다. 포트번호가 있어야 소켓에 전송가능하다.</p>
+
+<h3 id="확인-응답-데이터">확인 응답 데이터</h3>
+<p>수신측에서 데이터를 받았다고 송신측에 메시지를 보냄으로써 안정성을 확보한다. 확인 응답데이터에는 에러 체크 또한 포함된다. 이게 당연한 것 같지만, 보낸 ‘데이터를 받았음’을 응답해주지 않는 프로토콜(ex. UDP)도 많다. 그러므로 당연한 것 같아도 아주 특별한 기능이다.</p>
+
+<p><br /></p>
+
+<h2 id="ip-layer">IP layer</h2>
+<p>TCP layer를 지나 IP 레이어로 오게된다. TCP에서 받은 데이터에 출발지/목적지 IP가 붙여진다. 인터넷 네트워크는 복잡하게 구성되어있기 때문에 여러 IP들을 거쳐서 목적지 IP로 도착하게 해주는 역할을 한다.</p>
+
+<p>IP layer에는 목적지로 가기 위한 다음 IP를 알수 있는 <strong>Routing table</strong>이 존재한다. 이를 이용하여 목적지 IP로 가기 위한 다음 환승역을 찾는다.</p>
+
+<p><br /></p>
+
+<h2 id="data-link-layer">Data link layer</h2>
+<p>이 부분은 대부분 물리적인 것과 관련돼있다. MAC 주소와 NIC가 핵심이다.</p>
+
+<h3 id="mac-주소">MAC 주소</h3>
+<p>우리가 이용하는 개별 컴퓨터는 MAC 주소라는게 있는데 이 값은 컴퓨터마다 유니크하다. 여러대의 컴퓨터는 같은 IP를 공유하게 되므로 IP만으로 목적지가 어디인지 정확히 알수 없다. 은마아파트 101동이라는 정보만으로 친구 집의 위치를 알수 없는 것처럼말이다. IP가 “은마아파트 101동”이라면 “1203호”는 MAC주소이다.</p>
+
+<p>MAC주소가 덧붙여진 뒤 <strong>NIC</strong>로 전달한다. NIC에서는 데이터를 인터넷 네트워크 선에서 이동가능한 bit들로 변환한다. 그리고 최종적으로 인터넷선으로 전달한다.</p>
+
+<p><br /></p>
+
+<h1 id="서버에서-데이터-도착한-뒤">서버에서 데이터 도착한 뒤</h1>
+<p>TCP/IP 스택에서 붙여진 여러가지 데이터를 이용해서 목적지 서버에 데이터가 잘 도착했다. 도착한 곳은 서버의 NIC이다. NIC에 도착하면 제일 먼저 NIC Buffer에 임시로 데이터가 저장된다. 그리고 NIC에서 <em>Interrupt</em>를 일으켜 운영체제에 새로운 데이터가 왔음을 알린다. 이 알림을 받은 TCP/IP 스택에서 데이터를 가져간다. 그리고 TCP/IP 작업을 거꾸로 수행한다. <strong>클라이언트에서는 여러 데이터들을 덧붙이는 방식으로 TCP/IP 스택이 작동했다면, 서버측에서는 그 데이터를 떼어내며 작동한다. 떼어낸 데이터들은 서버 프로그램에 도착하는데 이용된다.</strong> 여러 작업을 마친 뒤 TCP layer에서 port번호까지 맞는지 확인됐다면 <u>TCP layer와 서버 프로그램의 연결지점인 Socket</u>에 데이터를 보낸다. 소켓 파일에 저장되는 것이 아니라 소켓의 구조체중 하나인 <strong>Receive socket buffer</strong>에 데이터가 쌓이게 된다.
+Receive socket buffer에 쌓인 데이터는 이제 운영체제의 책임에서 벗어났다. 이제부터는 Node.js 서버가 행동을 할 차례이다. <br /></p>
+
+<blockquote>
+  <p>Node.js 서버 뿐만 아니라 대부분의 프로그램은 <strong>TCP layer와 서버 프로그램의 연결지점인 socket</strong>에 데이터가 임시로 저장된 뒤 개별 프로그램에서 데이터를 가져와 처리한다.</p>
+</blockquote>
+
+<blockquote>
+  <p>계층별로 정보가 덧붙여진 데이터를 부르는 명칭이 있다. <br />TCP -&gt; 세그먼트 / IP -&gt; 패킷 / Data link -&gt; 프레임 / NIC -&gt; 비트<br />
+(관련된 글을 처음 읽는 사람도 있을 까봐 명칭을 쓰지않고 작성한 글이다.)</p>
+</blockquote>
+
+<p><br />
+프로그램이 데이터를 가져와 처리하는 방식은 다음글에서.</p>
+
+		
+	</div>
+	<div class="comment">
+		<script src="https://utteranc.es/client.js"
+        repo="moonqqqq/blog-comment"
+        issue-term="pathname"
+        label="comments"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
+	</div>
+</article>
+
+
+
+	  </main>
+		
+		  <!-- Pagination links -->
+      
+
+	  </div>
+	    
+	    <!-- Footer -->
+	    <footer><span>@2017 - Monochrome</span></footer>
+
+
+	    <!-- Script -->
+      <script src="/js/main.js"></script>	
+
+
+	</div>
+</body>
+</html>
