@@ -5,8 +5,8 @@
     <description>Node.js 백엔드 개발자</description>
     <link>http://localhost:4000//</link>
     <atom:link href="http://localhost:4000//feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 10 Aug 2024 13:15:08 +0900</pubDate>
-    <lastBuildDate>Sat, 10 Aug 2024 13:15:08 +0900</lastBuildDate>
+    <pubDate>Sat, 10 Aug 2024 13:29:57 +0900</pubDate>
+    <lastBuildDate>Sat, 10 Aug 2024 13:29:57 +0900</lastBuildDate>
     <generator>Jekyll v4.3.3</generator>
     
       <item>
@@ -545,6 +545,8 @@ User와 School 테이블이 있고 서로가 userId로 조인된 상태라면 �
   &lt;li&gt;개별 테이블이 공유하는 조인키로 정렬된다.&lt;/li&gt;
 &lt;/ol&gt;
 
+&lt;p&gt;아래를 보면 USERS가 school_id로 정렬된 걸 확인할 수 있다.&lt;/p&gt;
+
 &lt;table&gt;
   &lt;thead&gt;
     &lt;tr&gt;
@@ -719,6 +721,12 @@ User와 School 테이블이 있고 서로가 userId로 조인된 상태라면 �
   &lt;/thead&gt;
   &lt;tbody&gt;
     &lt;tr&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;lee&lt;/td&gt;
+      &lt;td&gt;2&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
       &lt;td&gt;2&lt;/td&gt;
       &lt;td&gt;choi&lt;/td&gt;
       &lt;td&gt;3&lt;/td&gt;
@@ -756,6 +764,11 @@ User와 School 테이블이 있고 서로가 userId로 조인된 상태라면 �
   &lt;/thead&gt;
   &lt;tbody&gt;
     &lt;tr&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;seoul&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
       &lt;td&gt;2&lt;/td&gt;
       &lt;td&gt;busan&lt;/td&gt;
       &lt;td&gt;O&lt;/td&gt;
@@ -789,6 +802,18 @@ User와 School 테이블이 있고 서로가 userId로 조인된 상태라면 �
   &lt;/thead&gt;
   &lt;tbody&gt;
     &lt;tr&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;lee&lt;/td&gt;
+      &lt;td&gt;2&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2&lt;/td&gt;
+      &lt;td&gt;choi&lt;/td&gt;
+      &lt;td&gt;3&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
       &lt;td&gt;3&lt;/td&gt;
       &lt;td&gt;kim&lt;/td&gt;
       &lt;td&gt;1&lt;/td&gt;
@@ -820,6 +845,16 @@ User와 School 테이블이 있고 서로가 userId로 조인된 상태라면 �
   &lt;/thead&gt;
   &lt;tbody&gt;
     &lt;tr&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;seoul&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2&lt;/td&gt;
+      &lt;td&gt;busan&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
       &lt;td&gt;4&lt;/td&gt;
       &lt;td&gt;lala&lt;/td&gt;
       &lt;td&gt;O&lt;/td&gt;
@@ -848,10 +883,22 @@ User와 School 테이블이 있고 서로가 userId로 조인된 상태라면 �
   &lt;/thead&gt;
   &lt;tbody&gt;
     &lt;tr&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;lee&lt;/td&gt;
+      &lt;td&gt;2&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2&lt;/td&gt;
+      &lt;td&gt;choi&lt;/td&gt;
+      &lt;td&gt;3&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
       &lt;td&gt;3&lt;/td&gt;
       &lt;td&gt;kim&lt;/td&gt;
       &lt;td&gt;1&lt;/td&gt;
-      &lt;td&gt;-&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
     &lt;/tr&gt;
     &lt;tr&gt;
       &lt;td&gt;6&lt;/td&gt;
@@ -878,6 +925,16 @@ User와 School 테이블이 있고 서로가 userId로 조인된 상태라면 �
     &lt;/tr&gt;
   &lt;/thead&gt;
   &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;seoul&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2&lt;/td&gt;
+      &lt;td&gt;busan&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
     &lt;tr&gt;
       &lt;td&gt;4&lt;/td&gt;
       &lt;td&gt;lala&lt;/td&gt;
