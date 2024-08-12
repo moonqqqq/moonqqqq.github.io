@@ -1,4 +1,13 @@
-Join 알고리즘을 하기전에 먼저 액세스 방식부터 확인하고 가자.
+---
+title: Join 알고리즘 대표적 3가지 특징/최적화
+description: RDB join 알고리즘 3가지 최적화
+header: Join 알고리즘 특징/최적화
+tags:
+ - database
+ - join
+---
+
+Join 알고리즘의 특징을 알아보기전에 먼저 액세스 방식부터 확인하고 가자.
 
 # 랜덤 액세스 vs 순차 액세스
 조인 종류를 보기전에 먼저 랜덤 액세스, 순차 액세스가 뭔지 알아야한다.
@@ -26,23 +35,6 @@ Hash Join은 순차 액세스를 하는데 non clustered 인덱스로 검색하�
 역시나 인덱스를 제대로 안갈어두는게 대부분의 문제이다.
 
 
-
-
-흐름을 코드로 파악하면 이렇다.
-```ts
-function hashJoin(Users, Schools) {
-    const smallerTable = findSmallerTable(Users, Schools);
-    const biggerTable = Users === smallerTable ? Schools : Users;
-
-    const hashTable = createHashTable(smallerTable);
-
-    for(const eachRow of biggerTable) {
-        const joinedTable = findMatchingDataFromOtherTable(hashFunc(eachRow.joinKey))
-
-        return pushToJoinResult(joinedTable, eachRwo)
-    }
-}
-```
 
 사실 Join 알고리즘을 튜닝할 일은 거의없지않나 싶다. 상용화되고 있는 데이터베이스들은 이미 최적화가 충분히 되어있다. join에 관해서도 문제가 발생하는 이유는 역시나 우리가 필요한 인덱스를 제대로 설정해놓지 않은 탓이 크다. 그래도 explain 결과를 볼때 도움이 되니 겅부해보자.
 
