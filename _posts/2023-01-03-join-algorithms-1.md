@@ -10,7 +10,7 @@ tags:
 
 #### 시리즈 목차
 <U>(현재글) 1. Join 알고리즘의 종류</U> <br>
-[2. Join 알고리즘 최적화]() <br>
+[2. Join 알고리즘 최적화](https://moonqqqq.github.io/join-algorithms-1) <br>
 
 ---
 <br>
