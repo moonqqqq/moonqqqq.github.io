@@ -57,4 +57,7 @@ SELECT문은 잠기지않는다.
 https://squarelab.co/blog/prisma-transactions/
 postgres lock - https://medium.com/@hnasr/postgres-locks-a-deep-dive-9fc158a5641c
 isolation level - https://mangkyu.tistory.com/299
+낙관적/비관적 락 
+- https://cookie-dev.tistory.com/30
+- https://sabarada.tistory.com/175
 
