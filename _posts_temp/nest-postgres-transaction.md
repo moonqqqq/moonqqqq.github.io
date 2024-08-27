@@ -52,8 +52,9 @@ Application단
 # Database단
 데이터베이스단에서 동시성 확보는 디비 자체적으로 해주는 것과 프로그래머가 직접 해줘야하는게 반반이다. Isolation, MVCC는 데이터베이스에서 알아서 해주는 것들이다. 반면에 "낙관적/비관적 락"과 "Avoid dead lock"은 프로그래머가 직접 해야할 일이다.
 
-## 1. Isolation
+데이터베이스단에서 동시성 관리는 우리가 where로 조건 검색한뒤에 한번더 필터링하는 과정이라고 생각하면 좋다.
 
+## 1. Isolation
 ###postgres는 read committed###
 
 (이 글에서는 PostgresSQL을 기준으로 한다. Isolation level에 대해 모르면 먼저 공부하고 오길 바란다.)
