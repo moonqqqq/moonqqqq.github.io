@@ -50,9 +50,15 @@ Application단
     2. 메시지 큐
 
 # Database단
-데이터베이스단에서 동시성 확보는 디비 자체적으로 해주는 것과 프로그래머가 직접 해줘야하는게 반반이다. Isolation, MVCC는 데이터베이스에서 알아서 해주는 것들이다. 반면에 "낙관적/비관적 락"과 "Avoid dead lock"은 프로그래머가 직접 해야할 일이다.
+데이터베이스단에서 동시성 확보는 디비 자체적으로 해주는 것과 프로그래머가 직접 코드로 짜야하는 걸로 나뉜다.. Isolation, MVCC는 데이터베이스에서 알아서 해주는 것들이다. 반면에 "낙관적/비관적 락"과 "Avoid dead lock"은 프로그래머가 직접 해야할 일이다.
 
-데이터베이스단에서 동시성 관리는 우리가 where로 조건 검색한뒤에 한번더 필터링하는 과정이라고 생각하면 좋다.
+데이터베이스단에서 직접 동시성 확보를 해주는 것은 Isolation과 MVCC라고 했는데 이 둘이 해주는 일을 간단히 이야기하면 아래와 같다.(postgres를 기준으로)
+
+1. Postgres의 기본 "Isolation" level인 "Read Committed"로 커밋된 데이터만 필터링한다.
+2. 커밋으로 한번 필터링 한 뒤에 "MVCC"로 이전 트랜잭션에서 완료된 데이터만 필터링한다.
+동시성 관리는 우리가 where로 조건 검색한 뒤에 한번더 필터링하는 과정이라고 생각하면 좋다.
+
+두가지를 좀더 알아보자.
 
 ## 1. Isolation
 ###postgres는 read committed###
@@ -75,10 +81,9 @@ postgresSQL에서는 "Read Committed" level이 기본 설정이다. 서비스의
 Postgres의 MVCC의 제일 중요한 것은 **XID(트랜잭션 ID)**이다. 매 트랜잭션마다 XID라는 값이 생긴다. 그리고 이 값을 XMIN, XMAX 시스템 필드에 저장하여 데이터 검색에 이용한다. 
 
 ### XMIN, XMAX
-Postgres는 모든 테이블의 시스템 컬럼으로 XMIN, XMAX가 존재한다. 따로 볼수는 없지만 SELECT 쿼리를 실행하면 볼수 있다. (`SELECT xmin, xmax from ANY_TABLE` 을 한번 실행해보면 볼수 있다.)
+Postgres는 모든 테이블의 시스템 컬럼으로 XMIN, XMAX가 존재한다. 따로 볼수는 없지만 SELECT 쿼리를 실행하면 볼수 있다. (`SELECT xmin, xmax FROM ANY_TABLE` 을 한번 실행해보면 볼수 있다.)
 
-Postgres는 매 트랜잭션마다 생기는 XID를 XMIN와 XMAX에 저장함으로 시점에 맞는 데이터 검색을 가능하게 한다.
-XID가 적으면 먼저 실행된 트랜잭션이고 XID가 크면 나중에 실행된 트랜잭션이다
+Postgres는 매 트랜잭션마다 생기는 XID를 XMIN와 XMAX에 저장함으로써 실행중인 트랜잭션 시점에 맞는 데이터 검색을 가능하게 한다. XID가 작으면 먼저 실행된 트랜잭션에서 처리된 데이터이고 XID가 크면 나중에 실행된 트랜잭션에서 처리된 데이터다. 이 값을 크기 비교하여 어떤 트랜잭션 데이터까지 열람할수 있는지 조절한다.
 
 INSERT문이 실행된다면 XID가 XMIN 값에 저장되고 XMAX는 0이 저장된다.
 UPDATE문에서는 기존에 존재하는 row의 XMAX에 현재 XID를 저장한다. 그리고 새로운 row를 만들어서 XMIN에 지금 XID를 저장한다.
