@@ -61,10 +61,8 @@ Application단
 두가지를 좀더 알아보자.
 
 ## 1. Isolation
-###postgres는 read committed###
-
 (이 글에서는 PostgresSQL을 기준으로 한다. Isolation level에 대해 모르면 먼저 공부하고 오길 바란다.)
-postgresSQL에서는 "Read Committed" level이 기본 설정이다. 서비스의 기능이 Read Committed가 맞지않다면 굳이 바꿀 필요는 없다.
+postgresSQL에서는 "Read Committed" level이 기본 설정이다. 서비스의 기능이 Read Committed과 맞지않다면 굳이 바꿀 필요는 없다.
 
 <U>커밋된 데이터만 읽어올 수 있는 "Read Commiited"</U>의 한계는 대표적으로 두가지다. **"Non-repeatable read"**와 **"Phantom read"**. 둘이 비슷하면서도 조금 다르다.
 
@@ -75,24 +73,26 @@ postgresSQL에서는 "Read Committed" level이 기본 설정이다. 서비스의
 # Phantom read
 하나의 트랜잭션에서 언제는 데이터가 있다가 언제는 없다. 트랜잭션A가 id=1인 row를 검색했을 때는 데이터가 존재했다. 그런데 트랜잭션A가 끝나기 전에 트랜잭션B가 id=1인 데이터를 삭제한다(커밋까지 완료). 그리고 다시 트랜잭션A가 id=1인 데이터를 검색했을 때는 데이터가 존재하지 않는다.
 ```
+
 이 두가지를 해결하기 위해서 postgres는 MVCC(Multi Version Concurrrency Control)을 제공한다.
 
 ## MVCC
 Postgres의 MVCC의 제일 중요한 것은 **XID(트랜잭션 ID)**이다. 매 트랜잭션마다 XID라는 값이 생긴다. 그리고 이 값을 XMIN, XMAX 시스템 필드에 저장하여 데이터 검색에 이용한다. 
-
+	**Read Committed 격리 수준에서는 트랜잭션이 실행하는 각 쿼리마다 새로운 스냅샷이 생성됩니다.**
 ### XMIN, XMAX
 Postgres는 모든 테이블의 시스템 컬럼으로 XMIN, XMAX가 존재한다. 따로 볼수는 없지만 SELECT 쿼리를 실행하면 볼수 있다. (`SELECT xmin, xmax FROM ANY_TABLE` 을 한번 실행해보면 볼수 있다.)
 
-Postgres는 매 트랜잭션마다 생기는 XID를 XMIN와 XMAX에 저장함으로써 실행중인 트랜잭션 시점에 맞는 데이터 검색을 가능하게 한다. XID가 작으면 먼저 실행된 트랜잭션에서 처리된 데이터이고 XID가 크면 나중에 실행된 트랜잭션에서 처리된 데이터다. 이 값을 크기 비교하여 어떤 트랜잭션 데이터까지 열람할수 있는지 조절한다.
+Postgres는 매 트랜잭션마다 생기는 XID를 XMIN와 XMAX에 저장함으로써 실행중인 트랜잭션 시점에 맞는 데이터 검색을 가능하게 한다. XID가 작으면 먼저 실행된 트랜잭션에서 처리된 데이터이고 XID가 크면 나중에 실행된 트랜잭션에서 처리된 데이터다. 이 값을 크기 비교하여 어떤 트랜잭션 데이터까지 열람할수 있는지 조절한다. 현재 진행중인 트랜잭션 이전의 데이터만 접근가능하게 한다.(현재 XID보다 낮은) Query에 따른 XID 설정 방법은 아래와 같다.
 
+```
 INSERT문이 실행된다면 XID가 XMIN 값에 저장되고 XMAX는 0이 저장된다.
 UPDATE문에서는 기존에 존재하는 row의 XMAX에 현재 XID를 저장한다. 그리고 새로운 row를 만들어서 XMIN에 지금 XID를 저장한다.
 DELETE문에서는 기존에 존재하는 row의 XMAX에 현재 XID를 저장한다.
+```
 
+현재 XID와 row들의 XMIN, XMAX를 비교함으로써 Read Committed에서 발생하는 non-repeatable read를 예방할수 있게 됐다.
 
-일단 기본적으로 INSERT문이 실행되면 트랜잭션이 실행되기때문에 XID가 생성된다. 그리고 생성하는 row데이터의 XMIN 필드에 
-XID를 XMIN, XMAX에 저장함으로써 버전 관리하듯이 트랜잭션 상황에 맞는 특정 버전의 데이터를 가져올수 있다. 
-
+하지만 Phantom read는 아직도 예방해주지 못한다. XMIN, XMAX를 이용하면 해결할 것으로 예상되지만 그렇지 않다.
 ### What is XMIN, XMAX?
 XMIN, XMAX는 [System Column](https://www.postgresql.org/docs/current/ddl-system-columns.html)이다. 모든 테이블에 존재하며 데이터 검색시 DBMS에 의해 자동으로 조건이 셋팅된다. 
 
@@ -213,6 +213,12 @@ kafka prodcer는 하나만 있나?
 SELECT문은 잠기지않는다.
 
 
+At the Read Committed isolation level, a snapshot is created at the beginning of each transaction statement.
+
+At the Repeatable Read and Serializable levels, the snapshot is created once, at the beginning of the first transaction statement.
+
+
+
 
 https://squarelab.co/blog/prisma-transactions/
 postgres lock - https://medium.com/@hnasr/postgres-locks-a-deep-dive-9fc158a5641c
@@ -223,3 +229,5 @@ isolation level - https://mangkyu.tistory.com/299
 
 - postbres mvcc https://blog.ex-em.com/1663
 https://devcenter.heroku.com/articles/postgresql-concurrency
+- postgres snapshot https://postgrespro.com/blog/pgsql/5967899
+https://postgrespro.com/blog/pgsql/5967899
