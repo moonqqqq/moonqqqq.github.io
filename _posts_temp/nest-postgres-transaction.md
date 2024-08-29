@@ -79,7 +79,16 @@ postgresSQL에서는 "Read Committed" level이 기본 설정이다. 서비스의
 이 두가지를 해결하기 위해서 Postgres는 MVCC(Multi Version Concurrrency Control)을 제공한다. (MVCC를 통해 "Non-repeatable read"는 완전히 방지할수 있지만 "Phantom read"는 완전히 절반만 방지가능하다.)
 
 ## MVCC
-MVCC에서는 스냅샷을 이용하여 특정 데이터에 대한 접근 가능성을 판단한다. 스냅샷은 특정 시점의 데이터베이스 상황을 저장해놓은 것이라고 생각하면 된다. 저장해놓는 데이터베이스 상황은 아래와 같다.
+MVCC에서는 **스냅샷**을 이용하여 특정 데이터에 대한 접근 가능성을 판단한다.
+스냅샷을 이용하는 흐름은 아래와 같다.
+
+1. 트랜잭션안에서 statement가 실행될때마다 스냅샷을 생성한다.
+2. statement(쿼리)를 실행한다.
+3. 쿼리의 결과물과 스냅샷을 비교하여(xmin, xmax) 한번 더 데이터를 필터링한다.
+
+<U>스냅샷 생성시기는 Isolation Level에 따라 다르다. Read Committed는 매 statement마다, Serialized, Repeatable Read는 트랜잭션이 시작했을 때만 생성된다.</U>(나는 이걸 몰라서 하루종일 찾았었다. Read Commiitted에서도 트랜잭션 시작 때 스냅샷이 생성되는줄 알았다. 트랜잭션 시작때 스냅샷이 생성되면 Phantom read가 해결돼야하는데 MVCC로는 Phantom read가 해결되지않다니 말이 되지않았다. 반나절이상 정보를 찾다보니 Read Committed에서는 매 statement마다 생성한다는 글을 겨우 찾았다.)
+
+스냅샷이 어떤 형태인지 훑어보자.
 
 ```c
 typedef struct SerializedSnapshotData
@@ -97,11 +106,18 @@ typedef struct SerializedSnapshotData
 
 // https://github.com/postgres/postgres/blob/06c418e163e913966e17cb2d3fb1c5f8a8d58308/src/backend/utils/time/snapmgr.c
 ```
+이번글에서는 xmin, xmax 이 두가지만 필요하다. 나머지는 직접 찾아보는것도 괜찮다.
+xmin: 현재 활성화된 트랜잭션 중 가장 작은 트랜잭션의 ID
+xmax: 현재 활성화된 트랜잭션중 가장 큰 트랜잭션의 ID
 
-xmin: 현재 활성화된 트랜잭션중 가장 작은 트랜잭션의 ID
-xmax:현재 활성화된 트랜잭션중 가장 큰 트랜잭션의 ID
+트랜잭션안에서 매 statement 시작전에 생성되는 xmin, xmax 정보를 이용하여 "1. where 조건문으로 검색한 데이터", 그리고 "2. 이 데이터를 Read Commiited로 필터링한 데이터"에 다시한번 필터링을 추가한다.
 
-이번글에서는 두가지만 알고 넘어가자. xmin, xmax
+검색된 데이터의 xmin값이 스냅샷의 xmin보다 작거나 같아야만 접근가능한 데이터이다. 크다면 현재 트랜잭션 보다 늦게 시작된 트랜잭션이기때문에 
+
+
+
+
+
 
 
 Postgres의 MVCC의 제일 중요한 것은 **XID(트랜잭션 ID)**이다. 매 트랜잭션마다 XID라는 값이 생긴다. 그리고 이 값을 XMIN, XMAX 시스템 필드에 저장하여 데이터 검색에 이용한다. 
