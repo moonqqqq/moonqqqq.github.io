@@ -1,5 +1,5 @@
 ---
-title: 백엔드 동시성 관리 - 1. Database
+title: 백엔드 동시성 관리 - 0. Database의 기본 도움
 description: 백엔드 동시성 관리
 header: 백엔드 동시성 관리
 tags:
@@ -40,10 +40,12 @@ Database단
 
 ### 목차
 Database단
-    1. Isolation
-    2. MVCC
-    3. 낙관적 락/ 비관적 락
-    4. Avoid deadlock
+    1. DB자체적으로 도와주는 부분
+        a. Isolation
+        b. MVCC
+    2. DB의 기능을 이용하여 프로그래머가 설정해야하는 부분
+        a. 낙관적 락/ 비관적 락
+        b. Avoid deadlock
 
 Application단
     1. 분산 락
@@ -74,9 +76,34 @@ postgresSQL에서는 "Read Committed" level이 기본 설정이다. 서비스의
 하나의 트랜잭션에서 언제는 데이터가 있다가 언제는 없다. 트랜잭션A가 id=1인 row를 검색했을 때는 데이터가 존재했다. 그런데 트랜잭션A가 끝나기 전에 트랜잭션B가 id=1인 데이터를 삭제한다(커밋까지 완료). 그리고 다시 트랜잭션A가 id=1인 데이터를 검색했을 때는 데이터가 존재하지 않는다.
 ```
 
-이 두가지를 해결하기 위해서 postgres는 MVCC(Multi Version Concurrrency Control)을 제공한다.
+이 두가지를 해결하기 위해서 Postgres는 MVCC(Multi Version Concurrrency Control)을 제공한다. (MVCC를 통해 "Non-repeatable read"는 완전히 방지할수 있지만 "Phantom read"는 완전히 절반만 방지가능하다.)
 
 ## MVCC
+MVCC에서는 스냅샷을 이용하여 특정 데이터에 대한 접근 가능성을 판단한다. 스냅샷은 특정 시점의 데이터베이스 상황을 저장해놓은 것이라고 생각하면 된다. 저장해놓는 데이터베이스 상황은 아래와 같다.
+
+```c
+typedef struct SerializedSnapshotData
+{
+	TransactionId xmin;
+	TransactionId xmax;
+	uint32		xcnt;
+	int32		subxcnt;
+	bool		suboverflowed;
+	bool		takenDuringRecovery;
+	CommandId	curcid;
+	TimestampTz whenTaken;
+	XLogRecPtr	lsn;
+} SerializedSnapshotData;
+
+// https://github.com/postgres/postgres/blob/06c418e163e913966e17cb2d3fb1c5f8a8d58308/src/backend/utils/time/snapmgr.c
+```
+
+xmin: 현재 활성화된 트랜잭션중 가장 작은 트랜잭션의 ID
+xmax:현재 활성화된 트랜잭션중 가장 큰 트랜잭션의 ID
+
+이번글에서는 두가지만 알고 넘어가자. xmin, xmax
+
+
 Postgres의 MVCC의 제일 중요한 것은 **XID(트랜잭션 ID)**이다. 매 트랜잭션마다 XID라는 값이 생긴다. 그리고 이 값을 XMIN, XMAX 시스템 필드에 저장하여 데이터 검색에 이용한다. 
 	**Read Committed 격리 수준에서는 트랜잭션이 실행하는 각 쿼리마다 새로운 스냅샷이 생성됩니다.**
 ### XMIN, XMAX
@@ -231,3 +258,4 @@ isolation level - https://mangkyu.tistory.com/299
 https://devcenter.heroku.com/articles/postgresql-concurrency
 - postgres snapshot https://postgrespro.com/blog/pgsql/5967899
 https://postgrespro.com/blog/pgsql/5967899
+- postgres snapshot data https://jnidzwetzki.github.io/2024/04/03/postgres-and-snapshots.html
