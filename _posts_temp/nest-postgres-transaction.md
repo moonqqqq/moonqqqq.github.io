@@ -10,28 +10,28 @@ tags:
  - transaction
 ---
 
-Database단
-    1. Isolation
-        postgres는 read committed
-            - 한줄 설명
-            - 한계/단점 파악
-            - 단점 예방 방법
-                => MVCC가 도와준다.
-    2. MVCC
-        - 간단 설명
-        - XID(XMIN,XMAX)를 이용하여 visibility를 정한다.
-        - 이것마저 한계라면 3번의 도움을 받는다.
-        isolation만 있을 때의 데이터 보호와 mvcc가 합채됐을 때 데이터 보호
-        한계를 도와주는 낙관적 락/비관적 락
-    3. 낙관적 락/ 비관적 락
+1. MVCC가 어떻게 Isolation을 구현했나.
+    1. 개별 설명
+    2. 개별 구현으로 인해 발생하는 문제
+2. 해결 방법
+    1. Read Committed에서 문제가 발생하는 경우
+        - 실제 예시 보여준다.
+        - 해결책
+        - 잘 발생하지않는 이유, 락으로 해결안해도 되는 방법.
+    2. Reeatable Read에서 문제가 발생하는 경우
+        - 실제 예시
+        - 해결책
+3. 해결책중에 락이 큰 부분을 차지하는데 락에 대해서 짚고 넘어가자.
+    낙관적 락/ 비관적 락
         설명
         어떤점을 도와주는지.
         어플리케이션 단이라 귀찮은지?
         실제로 쓰는 데가 있는지.
-    4. Avoid deadlock
+4. avoid deadlock
         •	교착 상태 탐지 및 복구: 교착 상태를 탐지하고 복구하는 메커니즘을 구현하여 시스템이 멈추는 것을 방지합니다.
         •	교착 상태 예방: 자원을 정렬된 순서로 획득하게 하거나, 타임아웃을 설정하여 교착 상태를 사전에 예방합니다.
         - 데드락 타임아웃 짧게 설정 innodb_lock_wait_timeout
+5. 애플리케이션 락, 메시지 큐
 
 
 백엔드에서 필요한 동시성 관리가 어떻게 진행되는지 정리해보자. 흔히 이용하는 인프라 자체에서 해주는 것과 프로그래머가 직접해야하는 것으로 나뉜다.
@@ -275,3 +275,6 @@ https://devcenter.heroku.com/articles/postgresql-concurrency
 - postgres snapshot https://postgrespro.com/blog/pgsql/5967899
 https://postgrespro.com/blog/pgsql/5967899
 - postgres snapshot data https://jnidzwetzki.github.io/2024/04/03/postgres-and-snapshots.html
+
+
+MVCC는 스냅샷을 통해 
