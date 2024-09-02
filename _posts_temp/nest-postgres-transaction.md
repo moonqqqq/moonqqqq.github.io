@@ -1,7 +1,7 @@
 ---
-title: 백엔드 핵심 - 동시성 - 0. Database의 기본 도움
+title: 백엔드 동시성 - 1. Database
 description: 백엔드 동시성 관리
-header: 백엔드 동시성 관리
+header: 백엔드 동시성 - 1. Database
 tags:
  - node.js
  - 백엔드
@@ -44,15 +44,14 @@ tags:
 2번째 글?
 DB가 작동하는 전체 흐름에서 백엔드에 영향을 줄수 잇는 부분.
 
-백엔드에서 필요한 동시성 관리가 어떻게 진행되는지 정리해보자. 흔히 이용하는 인프라 자체에서 해주는 것과 프로그래머가 직접해야하는 것으로 나뉜다.
+백엔드에서 필요한 동시성 관리가 어떻게 진행되는지 정리해보자. 개별 인프라가 자체적으로 제공해주는 것은 어떻게 작동하는지 알아보고, 프로그래머가 직접해야하는 것은 어떤 것들인지 알아본다.
 
-목차는 아래와 같다. 특이점은 OS단에서의 동시성 문제는 포함하지않았다. node.js(싱글스레드) 환경에서는 흔히 발생하지않기때문이다. 그리고 메시지큐에 대해서도 다룰건데 메시지큐 방식을 이용하면 싱글스레드에서 발생할 수 있는 대부분의 OS 동시성 문제를 예방가능하다.
+목차는 아래와 같다. OS단에서의 동시성 문제는 포함하지않았다. node.js(싱글스레드) 환경에서는 흔히 발생하지않기때문이다. 그리고 메시지큐에 대해서도 다룰건데 메시지큐 방식을 이용하면 싱글스레드에서 발생할 수 있는 대부분의 OS 동시성 문제를 예방가능하다.
 
 ### 목차
 Database단
     1. DB자체적으로 도와주는 부분
-        a. Isolation
-        b. MVCC
+        a. MVCC - Isolation
     2. DB의 기능을 이용하여 프로그래머가 설정해야하는 부분
         a. 낙관적 락/ 비관적 락
         b. Avoid deadlock
@@ -62,7 +61,72 @@ Application단
     2. 메시지 큐
 
 # Database단
-데이터베이스단에서 동시성 확보는 디비 자체적으로 해주는 것과 프로그래머가 직접 코드로 짜야하는 걸로 나뉜다.. Isolation, MVCC는 데이터베이스에서 알아서 해주는 것들이다. 반면에 "낙관적/비관적 락"과 "Avoid dead lock"은 프로그래머가 직접 해야할 일이다.
+데이터베이스단에서 동시성 확보는 디비 자체적으로 해주는 것과 프로그래머가 직접 코드로 짜야하는 걸로 나뉜다. 
+기본적인 잠금과 Isolation level 구현은 데이터베이스에서 이미 완성시켜뒀다. 그 나머지 부분은 프로그래머가 코드로 구현해야만한다.
+
+## 1. 기본 잠금 - Shared Lock, Exclusive Lock
+모든 데이터베이스에서는 update, delete문에 포함되는 row를 잠궈버린다. 다른 update, delete문이 같은 row에대해 실행하려한다면 이전 쿼리의 트랜잭션이 끝날때까지 기다려야한다. (INSERT, UPDATE, DELETE문은 트랜잭션을 설정하지않아도 알아서 트랜잭션을 실행하고 작업이 완료되면 트랜잭션을 끝낸다.)
+
+여기서 쓰이는 잠금은 "Shared Lock"과 "Exclusive Lock"이라고 한다.
+
+Shared Lock: 내가 이 데이터 보고 있으니까 데이터 바꾸지마.
+Exclusive Lock: 내가 데이터 수정할거니까 보기만하고 건들지마.
+
+Shared Lock은 읽기 작업에 쓰인다. 이름에 "Shared"가 붙어있듯이 다른 트랜잭션에서도 shared lock을 걸수 있다. 만약 트랜잭션 A에서 row1에 Shared Lock을 건 상태라면 다른 트랜잭션에서도 row1에 Shared Lock을 걸수 있다. Shared Lock이 겹쳤을 때는 마지막 Shared Lock을 건 트랜잭션이 Lock을 풀면 해당 row의 shared Lock이 풀린다.
+
+Exclusive Lock은 아무도 건들지 못하는 잠금이다. shared lock은 같은 shared lock이 공유할수 있지만 exclusive는 불가능하다. 데이터를 바꿀거니 건들지마라는 의미다.
+
+(+ 기본적으로 아무것도 설정하지않은 select문은 트랜잭션도, Lock도 이용하지않는다.)
+
+
+## 2. MVCC (Multi Version concurrency control)
+MVCC는 모든 RDB 데이터베이스의 규칙인 Isolation Level을 구현한 것이다. Postgres에서 MVCC의 핵심은 Snapshot
+
+### MVCC의 논리적 기반
+MVCC의 논리적인 기반은 데이터베이스의 2가지 기본특징이다. // MVCC는 데이터베이스의 2가지 기본 특징을 이용한다.
+**1. 데이터베이스의 INSERT, UPDATE, DELETE는 기본적으로 메모리에 1차로 저장된 다음에 transaction이 커밋되면 디스크에 저장한다.** 
+**2. 데이터베이스에서 데이터를 가져올 때는 disk에서 메모리에 가져온뒤에 한번더 필터링을 거쳐 클라이언트에게 응답한다.**
+
+**Read Committed**는 메모리에만 존재하는 데이터는 읽지않는다.(커밋된 데이터만 읽을수 있다.)
+**Repeatable Read**는 메모리에만 존재하는 데이터도 읽는다. 하지만 트랜잭션이 시작된 시점에 존재했던 데이터만 가능하다.
+
+더 자세히 알아보자.
+
+### MVCC의 물리적 기반
+MVCC snapshot이란 내부 데이터를 활용한다. 특정 시점의 데이터베이스를 캡쳐한 데이터를 나타내는, 복구할때 이용하는 snapshot과는 이름만 같다.
+
+먼저 MVCC의 스냅샷이 어떤 형태인지 훑어보자.
+
+```c
+typedef struct SerializedSnapshotData
+{
+	TransactionId xmin;
+	TransactionId xmax;
+	uint32		xcnt;
+	int32		subxcnt;
+	bool		suboverflowed;
+	bool		takenDuringRecovery;
+	CommandId	curcid;
+	TimestampTz whenTaken;
+	XLogRecPtr	lsn;
+} SerializedSnapshotData;
+
+// https://github.com/postgres/postgres/blob/06c418e163e913966e17cb2d3fb1c5f8a8d58308/src/backend/utils/time/snapmgr.c
+```
+일차적으로는 xmin, xmax 이 두가지만 필요하다. 나머지는 직접 찾아보는것도 괜찮다.
+xmin: 현재 활성화된 트랜잭션 중 가장 작은 트랜잭션의 ID
+xmax: 현재 활성화된 트랜잭션중 가장 큰 트랜잭션의 ID
+
+트랜잭션안에서 매 statement 시작전에 생성되는 xmin, xmax 정보를 이용하여 "1. where 조건문으로 검색한 데이터", 그리고 "2. 이 데이터를 Read Commiited로 필터링한 데이터"에 다시한번 필터링을 추가한다.
+
+검색된 데이터의 xmin값이 스냅샷의 xmin보다 작거나 같아야만 접근가능한 데이터이다. 크다면 현재 트랜잭션 보다 늦게 시작된 트랜잭션이기때문에 
+
+
+
+
+
+
+데이터베이스의 Isolation lever을 MVCC는 데이터베이스에서 알아서ㄴ 해주는 것들이다. 반면에 "낙관적/비관적 락"과 "Avoid dead lock"은 프로그래머가 직접 해야할 일이다.
 
 데이터베이스단에서 직접 동시성 확보를 해주는 것은 Isolation과 MVCC라고 했는데 이 둘이 해주는 일을 간단히 이야기하면 아래와 같다.(postgres를 기준으로)
 
