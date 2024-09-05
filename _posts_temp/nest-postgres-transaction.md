@@ -1,7 +1,7 @@
 ---
-title: 백엔드 동시성 - 1. Database
+title: 백엔드 동시성 - 1. Postgres 가시성
 description: 백엔드 동시성 관리
-header: 백엔드 동시성 - 1. Database
+header: 백엔드 동시성 - 1. Postgres 가시성
 tags:
  - node.js
  - 백엔드
@@ -9,99 +9,60 @@ tags:
  - database
  - transaction
 ---
+`Hit Bits`, `MVCC`, `pg_xact`
 
-데이터베이스 동시성 관리
-데이터베이스는 제각각 Isolation level을 자기만의 방법으로 구현한다. postgres를 파악해보자~
-
-1. MVCC가 뭔지
-2. MVCC를 무엇을 이용해서 구현하나. 
-    1. 스냅샷
-        - 스냅샷의 내용물 설명
-        - 내용물이 어떻게 이용되는지.
-3. default인 read committed
-    - 한계가 있지만 이용해도 되는 이유.
-    - 극복할 방법 
-        - 낙관적락(특정테이블 변화확인)
-        - select에 비관적락 설정
-
-4. Repeatable read는 뭐가 다른가?
-    - non-repeatable read를 해결해준다.
-        - 이거 해결해서 뭐가 좋은데? 어떤 실제 문제가 발생하는데?
-    - repeatable read도 read committed와 거의 같은 문제가 발생함.
-
-5. 둘다 문제가 있으면 어떡하라고? serialzae쓰라고?
-    1. 아까 말한 낙관적락, 비관적락이 중요하다.
-
-6. plus alpha
-    4. avoid deadlock
-        •	교착 상태 탐지 및 복구: 교착 상태를 탐지하고 복구하는 메커니즘을 구현하여 시스템이 멈추는 것을 방지합니다.
-        •	교착 상태 예방: 자원을 정렬된 순서로 획득하게 하거나, 타임아웃을 설정하여 교착 상태를 사전에 예방합니다.
-        - 데드락 타임아웃 짧게 설정 innodb_lock_wait_timeout
-5. 애플리케이션 락, 메시지 큐
-
-
-
-2번째 글?
-DB가 작동하는 전체 흐름에서 백엔드에 영향을 줄수 잇는 부분.
-
-백엔드에서 필요한 동시성 관리가 어떻게 진행되는지 정리해보자. 개별 인프라가 자체적으로 제공해주는 것은 어떻게 작동하는지 알아보고, 프로그래머가 직접해야하는 것은 어떤 것들인지 알아본다.
-
-목차는 아래와 같다. OS단에서의 동시성 문제는 포함하지않았다. node.js(싱글스레드) 환경에서는 흔히 발생하지않기때문이다. 그리고 메시지큐에 대해서도 다룰건데 메시지큐 방식을 이용하면 싱글스레드에서 발생할 수 있는 대부분의 OS 동시성 문제를 예방가능하다.
+동시성 확보 관련해서 프로그래머가 직접 코드단에서 짜야하는 것을 알아보기전에 데이터베이스에서 기본적으로 제공해주는 동시성 확보 방식을 알아본다.
 
 ### 목차
+```
 Database단
     1. DB자체적으로 도와주는 부분
-        a. MVCC - Isolation
+        a. MVCC - Isolation  => 한계가 있다.
     2. DB의 기능을 이용하여 프로그래머가 설정해야하는 부분
         a. 낙관적 락/ 비관적 락
         b. Avoid deadlock
-
 Application단
     1. 분산 락
     2. 메시지 큐
+```
 
 # Database단
 데이터베이스단에서 동시성 확보는 디비 자체적으로 해주는 것과 프로그래머가 직접 코드로 짜야하는 걸로 나뉜다. 
-기본적인 잠금과 Isolation level 구현은 데이터베이스에서 이미 완성시켜뒀다. 그 나머지 부분은 프로그래머가 코드로 구현해야만한다.
+"1. 기본적인 잠"금(shared/exclusive lock)"과 "2. Isolation level 구현(MVCC)은 데이터베이스에서 이미 완성시켜뒀다. 그 나머지 부분은 프로그래머가 코드로 구현해야만한다.
 
 ## 1. 기본 잠금 - Shared Lock, Exclusive Lock
-모든 데이터베이스에서는 update, delete문에 포함되는 row를 잠궈버린다. 다른 update, delete문이 같은 row에대해 실행하려한다면 이전 쿼리의 트랜잭션이 끝날때까지 기다려야한다. (INSERT, UPDATE, DELETE문은 트랜잭션을 설정하지않아도 알아서 트랜잭션을 실행하고 작업이 완료되면 트랜잭션을 끝낸다.)
+모든 데이터베이스에서는 update, delete문이 실행되는 동안 해당 row를 잠궈버린다. 다른 update, delete문이 같은 row에대해 실행하려한다면 이전 쿼리의 트랜잭션이 끝날때까지 기다려야한다. (INSERT, UPDATE, DELETE문은 트랜잭션을 명시적으로 설정하지않아도 데이터베이스가 알아서 트랜잭션을 실행하고 작업이 완료되면 트랜잭션을 끝낸다. 반대로 기본적으로 아무것도 설정하지않은(트랜잭션 X, for update 설정 X) select문은 트랜잭션도, Lock도 이용하지않는다.)
 
-여기서 쓰이는 잠금은 "Shared Lock"과 "Exclusive Lock"이라고 한다.
+여기서 쓰이는 잠금은 "Shared Lock"과 "Exclusive Lock"이다.
 
-Shared Lock: 내가 이 데이터 보고 있으니까 데이터 바꾸지마.
-Exclusive Lock: 내가 데이터 수정할거니까 보기만하고 건들지마.
+Shared Lock: 내가 이 데이터 보고 있으니까 데이터 바꾸지마. 보기만 해.
+Exclusive Lock: 내가 데이터 수정할거니까 보기만하고 수정하지마..
 
-Shared Lock은 읽기 작업에 쓰인다. 이름에 "Shared"가 붙어있듯이 다른 트랜잭션에서도 shared lock을 걸수 있다. 만약 트랜잭션 A에서 row1에 Shared Lock을 건 상태라면 다른 트랜잭션에서도 row1에 Shared Lock을 걸수 있다. Shared Lock이 겹쳤을 때는 마지막 Shared Lock을 건 트랜잭션이 Lock을 풀면 해당 row의 shared Lock이 풀린다.
-
-Exclusive Lock은 아무도 건들지 못하는 잠금이다. shared lock은 같은 shared lock이 공유할수 있지만 exclusive는 불가능하다. 데이터를 바꿀거니 건들지마라는 의미다.
-
-(+ 기본적으로 아무것도 설정하지않은 select문은 트랜잭션도, Lock도 이용하지않는다.)
-
+두가지 잠금 모두 다른 트랜잭션에서 **데이터 수정을 불가능**하게 만든다. **둘의 차이점은 잠금을 걸었을 때 다른 잠금이 동시에 잠금을 걸수 있는지 없는지 여부다.** Exclusive Lock은 이름처럼 어떠한 락도 공존할수 없다. Shared Lock은 이름처럼 공존할수 있다. 다만 공존할수 있는 Lock은 Shared Lock뿐이다.
+만약 트랜잭션 A에서 row1에 Shared Lock을 건 상태라면 다른 트랜잭션에서도 row1에 Shared Lock을 걸수 있다. Shared Lock이 겹쳤을 때는 마지막 Shared Lock을 건 트랜잭션이 Lock을 풀면 해당 row의 shared Lock이 풀린다. Exclusive Lock은 동시에 다른 잠금을 걸수 없다.
 
 ## 2. MVCC (Multi Version concurrency control)
-MVCC는 모든 RDB 데이터베이스의 규칙인 Isolation Level을 구현한 것이다. Postgres에서 MVCC의 핵심은 Snapshot
+MVCC는 모든 RDB 데이터베이스에서 통용되는 규칙인 "Isolation Level"을 구현한 것이다.
 
 ### MVCC의 논리적 기반
-MVCC의 논리적인 기반은 데이터베이스의 2가지 기본특징이다. // MVCC는 데이터베이스의 2가지 기본 특징을 이용한다.
-**1. 데이터베이스의 INSERT, UPDATE, DELETE는 기본적으로 메모리에 1차로 저장된 다음에 transaction이 커밋되면 디스크에 저장한다.** 
-**2. 데이터베이스에서 데이터를 가져올 때는 disk에서 메모리에 가져온뒤에 한번더 필터링을 거쳐 클라이언트에게 응답한다.**
+MVCC는 데이터베이스의 기본 저장방식인 **COMMIT**을 이용한다. 데이터베이스는 데이터를 저장, 수정할 때 1차로 메모리에 저장한뒤에 트랜젝션이 커밋되면 DISK에 저장하는 방식이다.
+커밋한 데이터만 읽어들일건지, 커밋하지않았지만 메모리에 저장된 데이터도 읽어들일건지에 따라 Isolation Level이 나뉜다.
 
-**Read Committed**는 메모리에만 존재하는 데이터는 읽지않는다.(커밋된 데이터만 읽을수 있다.)
+**Read Committed**는 메모리에만 존재하는 데이터는 읽지않는다.(커밋된 데이터만 읽는다.)
 **Repeatable Read**는 메모리에만 존재하는 데이터도 읽는다. 하지만 트랜잭션이 시작된 시점에 존재했던 데이터만 가능하다.
 
 더 자세히 알아보자.
 
 ### MVCC의 물리적 기반
-MVCC snapshot이란 내부 데이터를 활용한다. 특정 시점의 데이터베이스를 캡쳐한 데이터를 나타내는, 복구할때 이용하는 snapshot과는 이름만 같다.
+MVCC는 snapshot이란 내부 데이터를 활용한다. (데이터베이스 복구할때 이용하는 snapshot과는 이름만 같다.)
 
 먼저 MVCC의 스냅샷이 어떤 형태인지 훑어보자.
 
 ```c
 typedef struct SerializedSnapshotData
 {
-	TransactionId xmin;
-	TransactionId xmax;
+	TransactionId xmin;     // !
+	TransactionId xmax;     // !
 	uint32		xcnt;
 	int32		subxcnt;
 	bool		suboverflowed;
@@ -113,9 +74,43 @@ typedef struct SerializedSnapshotData
 
 // https://github.com/postgres/postgres/blob/06c418e163e913966e17cb2d3fb1c5f8a8d58308/src/backend/utils/time/snapmgr.c
 ```
-일차적으로는 xmin, xmax 이 두가지만 필요하다. 나머지는 직접 찾아보는것도 괜찮다.
-xmin: 현재 활성화된 트랜잭션 중 가장 작은 트랜잭션의 ID
+
+일차적으로는 xmin, xmax 이 두가지만 필요하다.
+xmin: 현재 활성화된(실행되고있는) 트랜잭션 중 가장 작은 트랜잭션의 ID
 xmax: 현재 활성화된 트랜잭션중 가장 큰 트랜잭션의 ID
+
+모든 row들은 system column으로 xmin, xmax를 가진다. (`SELECT xmin, xmax FROM ANY_TABLE` 을 한번 실행해보면 볼수 있다.)
+- 데이터(row)가 생성될 때 xmin으로 현재 트랜잭션 ID가 설정되고 xmax로 0이 설정된다.
+- 데이터를 삭제하면 xmax에 현재 트랜잭션 ID가 설정된다.
+- 데이터를 수정하면 xmax에 현재 트랜잭션 ID를 설정한다. 그리고 새로운 데이터(row)를 생성하면서 xmin은 현재 트랜잭션 ID, xmax는 0으로 설정된다.
+
+위 3가지 규칙을 이용하여 where문으로 가져온 row들을 다시한번 필터링하게 된다. 필터링 조건은 Isolation level마다 다르다.
+
+#### Hit bits
+그리고 하나더 힌트 비트(hint bits)를 보고 넘어가자.
+
+개별 row의 헤더에 힌트 비트를 가지고 있는데 4가지를 가지고 있다.
+```md
+XMIN_COMMITTED -- creating transaction is known committed
+XMIN_ABORTED -- creating transaction is known aborted
+XMAX_COMMITTED -- same, for the deleting transaction
+XMAX_ABORTED -- ditto
+
+// https://wiki.postgresql.org/wiki/Hint_Bits
+```
+
+XMIN_COMMITTED 혹은 XMAX_COMMITTED가 true라면 커밋된 데이터를 뜻한다. where문으로 가져온 rows들에 붙어있는(헤더에 저장돼있는) hit bit를 확인하여 커밋된 데이터인지 아닌지 파악하여 필터링한다.
+
+
+#### pg_xact(pg_clog) 커밋로그
+hint bits의 값이 없다면 해당 row에 대해서 "pg_xact"를 확인한다.
+
+pg_xact는 우리가 흔히 말하는 트랜잭션 로그이다. disk에 따로 저장돼있는 파일로써 트랜잭션에 대한 로그를 저장해둔다. 이파일을 이용하여 트랜잭션들의 상태를 파악할수 있다. pg_xact는 기본적으로 disk에 저장돼있어 느리지만 최신 트랜잭션 로그에 대해서는 메모리에 캐싱해둔어 성능을 높인다.
+
+
+#### Read Committed에서의 snapshot 이용.
+Read Committed는 커밋된 데이터만 보여주는 것이기 규칙이기때문에 XID를 거의 이용하지않는다.
+트랜잭션안에서 지금 실행되는 쿼리 시점에서 COMMIT된 데이터만 읽어와서 보여줄 뿐이다. XMIN, XMAX가 이용되는 건 특정 row에 여러번의 수정 작업이 있었다거나 삭제된 기록을 XMAX를 이용하여 필터링한다. XMAX가 0이 아니라면 수정이 발생해서 이전 버전의 데이터거나, 삭제된 데이터를 의미하기때문이다.
 
 트랜잭션안에서 매 statement 시작전에 생성되는 xmin, xmax 정보를 이용하여 "1. where 조건문으로 검색한 데이터", 그리고 "2. 이 데이터를 Read Commiited로 필터링한 데이터"에 다시한번 필터링을 추가한다.
 
@@ -358,3 +353,35 @@ MVCC는 스냅샷을 통해
 공유 락과 베타 락의 핵심은 읽기 쓰기가 아니라 락 사이 호환 여부입니다.
 
 공유 락은 같은 공유 락을 허용하기 때문에 읽기가 가능하고, 쓰기에 필요한 베타 락을 불허하기 때문에 쓰기가 불가능 한 것이며, 베타 락은 락을 사용하는 읽기(Locking Reads)인 경우에는 불가능하며 락을 사용하지 않는 읽기(Consistent Nonlocking Reads)인 경우에는 가능합니다.
+
+https://javamix.tistory.com/entry/PostgreSQL-Concurrency-With-MVCC
+
+
+데이터베이스 동시성 관리
+데이터베이스는 제각각 Isolation level을 자기만의 방법으로 구현한다. postgres를 파악해보자~
+
+1. MVCC가 뭔지
+2. MVCC를 무엇을 이용해서 구현하나. 
+    1. 스냅샷
+        - 스냅샷의 내용물 설명
+        - 내용물이 어떻게 이용되는지.
+3. default인 read committed
+    - 한계가 있지만 이용해도 되는 이유.
+    - 극복할 방법 
+        - 낙관적락(특정테이블 변화확인)
+        - select에 비관적락 설정
+
+4. Repeatable read는 뭐가 다른가?
+    - non-repeatable read를 해결해준다.
+        - 이거 해결해서 뭐가 좋은데? 어떤 실제 문제가 발생하는데?
+    - repeatable read도 read committed와 거의 같은 문제가 발생함.
+
+5. 둘다 문제가 있으면 어떡하라고? serialzae쓰라고?
+    1. 아까 말한 낙관적락, 비관적락이 중요하다.
+
+6. plus alpha
+    4. avoid deadlock
+        •	교착 상태 탐지 및 복구: 교착 상태를 탐지하고 복구하는 메커니즘을 구현하여 시스템이 멈추는 것을 방지합니다.
+        •	교착 상태 예방: 자원을 정렬된 순서로 획득하게 하거나, 타임아웃을 설정하여 교착 상태를 사전에 예방합니다.
+        - 데드락 타임아웃 짧게 설정 innodb_lock_wait_timeout
+5. 애플리케이션 락, 메시지 큐
