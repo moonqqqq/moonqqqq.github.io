@@ -28,20 +28,20 @@ Application단
 
 # Database단
 데이터베이스단에서 동시성 확보는 디비 자체적으로 해주는 것과 프로그래머가 직접 코드로 짜야하는 걸로 나뉜다. 
-"1. 기본적인 잠"금(shared/exclusive lock)"과 "2. Isolation level 구현(MVCC)은 데이터베이스에서 이미 완성시켜뒀다. 그 나머지 부분은 프로그래머가 코드로 구현해야만한다.
+"1. 기본적인 "잠금(shared/exclusive lock)"과 "2. Isolation level 구현(MVCC)은 데이터베이스에서 이미 완성시켜뒀다. 그 나머지 부분은 프로그래머가 코드로 구현해야만한다.
 
 ## 1. 기본 잠금 - Shared Lock, Exclusive Lock
-모든 데이터베이스에서는 update, delete문이 실행되는 동안 해당 row를 잠궈버린다. 다른 update, delete문이 같은 row에대해 실행하려한다면 이전 쿼리의 트랜잭션이 끝날때까지 기다려야한다. (INSERT, UPDATE, DELETE문은 트랜잭션을 명시적으로 설정하지않아도 데이터베이스가 알아서 트랜잭션을 실행하고 작업이 완료되면 트랜잭션을 끝낸다. 반대로 기본적으로 아무것도 설정하지않은(트랜잭션 X, for update 설정 X) select문은 트랜잭션도, Lock도 이용하지않는다.)
+모든 데이터베이스에서는 update, delete문이 실행되는 동안 해당 row를 잠궈버린다. 다른 쿼리중에서 update, delete문이 같은 row에 대해 실행하려한다면 이전 쿼리의 트랜잭션이 끝날때까지 기다려야한다. (INSERT, UPDATE, DELETE문은 트랜잭션을 명시적으로 설정하지않아도 데이터베이스가 알아서 트랜잭션을 실행하고 작업이 완료되면 트랜잭션을 끝낸다. 반대로 기본적으로 아무것도 설정하지않은(트랜잭션 X, for update 설정 X) select문은 트랜잭션도, Lock도 이용하지않는다.)
 
 여기서 쓰이는 잠금은 "Shared Lock"과 "Exclusive Lock"이다.
 
-Shared Lock: 내가 이 데이터 보고 있으니까 데이터 바꾸지마. 보기만 해.
+Shared Lock: 내가 이 데이터 보고 있으니까 데이터 바꾸지마. 보기만 해.<br>
 Exclusive Lock: 내가 데이터 수정할거니까 보기만하고 수정하지마..
 
 두가지 잠금 모두 다른 트랜잭션에서 **데이터 수정을 불가능**하게 만든다. **둘의 차이점은 잠금을 걸었을 때 다른 잠금이 동시에 잠금을 걸수 있는지 없는지 여부다.** Exclusive Lock은 이름처럼 어떠한 락도 공존할수 없다. Shared Lock은 이름처럼 공존할수 있다. 다만 공존할수 있는 Lock은 Shared Lock뿐이다.
 만약 트랜잭션 A에서 row1에 Shared Lock을 건 상태라면 다른 트랜잭션에서도 row1에 Shared Lock을 걸수 있다. Shared Lock이 겹쳤을 때는 마지막 Shared Lock을 건 트랜잭션이 Lock을 풀면 해당 row의 shared Lock이 풀린다. Exclusive Lock은 동시에 다른 잠금을 걸수 없다.
 
-## 2. MVCC (Multi Version concurrency control)
+## 2. MVCC (Multi Version Concurrency Control)
 MVCC는 모든 RDB 데이터베이스에서 통용되는 규칙인 "Isolation Level"을 구현한 것이다.
 
 ### MVCC의 논리적 기반
