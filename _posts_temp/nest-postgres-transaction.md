@@ -35,26 +35,26 @@ Application단
 
 여기서 쓰이는 잠금은 "Shared Lock"과 "Exclusive Lock"이다.
 
-Shared Lock: 내가 이 데이터 보고 있으니까 데이터 바꾸지마. 보기만 해.<br>
+Shared Lock: 내가 이 데이터 보고 있으니까 데이터 바꾸지마. 보기만 해. 근데 너도 같이 잠글수 있어(shared lock만)<br>
 Exclusive Lock: 내가 데이터 수정할거니까 보기만하고 수정하지마..
 
 두가지 잠금 모두 다른 트랜잭션에서 **데이터 수정을 불가능**하게 만든다. **둘의 차이점은 잠금을 걸었을 때 다른 잠금이 동시에 잠금을 걸수 있는지 없는지 여부다.** Exclusive Lock은 이름처럼 어떠한 락도 공존할수 없다. Shared Lock은 이름처럼 공존할수 있다. 다만 공존할수 있는 Lock은 Shared Lock뿐이다.
-만약 트랜잭션 A에서 row1에 Shared Lock을 건 상태라면 다른 트랜잭션에서도 row1에 Shared Lock을 걸수 있다. Shared Lock이 겹쳤을 때는 마지막 Shared Lock을 건 트랜잭션이 Lock을 풀면 해당 row의 shared Lock이 풀린다. Exclusive Lock은 동시에 다른 잠금을 걸수 없다.
+만약 트랜잭션A에서 row1에 Shared Lock을 건 상태라면 다른 트랜잭션에서도 row1에 Shared Lock을 걸수 있다. Shared Lock이 겹쳤을 때는 마지막 Shared Lock을 건 트랜잭션이 Lock을 풀면 해당 row의 shared Lock이 풀린다. Exclusive Lock은 동시에 다른 잠금을 걸수 없다.
 
 ## 2. MVCC (Multi Version Concurrency Control)
-MVCC는 모든 RDB 데이터베이스에서 통용되는 규칙인 "Isolation Level"을 구현한 것이다.
+MVCC는 대부분의 관계형 데이터베이스에서 통용되는 규칙인 "Isolation Level"을 구현한 것이다.
 
 ### MVCC의 논리적 기반
-MVCC는 데이터베이스의 기본 저장방식인 **COMMIT**을 이용한다. 데이터베이스는 데이터를 저장, 수정할 때 1차로 메모리에 저장한뒤에 트랜젝션이 COMMIT되면 DISK에 저장한다.
+MVCC는 데이터베이스의 기본 저장방식인 **COMMIT**을 이용한다. 데이터베이스는 데이터를 저장, 수정할 때 1차로 메모리에 저장한뒤에 트랜젝션이 COMMIT되면 DISK에 저장한다. (매커니즘에 따라 여러 커밋이 뭉쳐서 disk에 저장되기도 한다.)
 커밋한 데이터만 읽어들일건지, 커밋하지않았지만 메모리에 저장된 데이터도 읽어들일건지에 따라 Isolation Level이 나뉜다.
 
-**Read Committed**는 메모리에만 존재하는 데이터는 읽지않는다.(커밋된 데이터만 읽는다.)<br>
-**Repeatable Read**는 메모리에만 존재하는 데이터도 읽는다. 하지만 트랜잭션이 시작된 시점에 존재했던 데이터만 가능하다.
+**Read Committed**는 커밋된 데이터만 읽는다.<br>
+**Repeatable Read**는 커밋되지 않은 데이터도 읽는다. 하지만 트랜잭션이 시작된 시점에도 존재했던 데이터만 읽는다.
 
 더 자세히 알아보자.
 
 ### MVCC의 물리적 기반
-MVCC는 "snapshot"이라는 내부 데이터를 활용한다. (데이터베이스 복구할때 이용하는 snapshot과는 이름만 같다.)
+MVCC는 "snapshot"이라는 내부 데이터를 활용한다. (데이터베이스 복구할 때 이용하는 snapshot과는 이름만 같다.)
 
 먼저 MVCC의 스냅샷이 어떤 형태인지 훑어보자.
 
@@ -85,12 +85,12 @@ xmax: 현재 활성화된 트랜잭션중 가장 큰 트랜잭션의 ID
 - 데이터를 삭제하면 xmax에 현재 트랜잭션 ID가 설정된다.
 - 데이터를 수정하면 xmax에 현재 트랜잭션 ID를 설정한다. 그리고 새로운 데이터(row)를 생성하면서 xmin은 현재 트랜잭션 ID, xmax는 0으로 설정된다.
 
-위 3가지 규칙을 이용하여 where문으로 가져온 row들을 다시 한번 필터링하게 된다. 필터링 조건은 Isolation level마다 다르다.
+**위 3가지 규칙을 이용하여 where문으로 가져온 row들을 다시 한번 필터링**하게 된다. 필터링 조건은 Isolation level마다 다르다.
 
 #### Hint bits
-그리고 하나 더, 힌트 비트(hint bits)를 보고 넘어가자.
+그리고 하나 더, 힌트 비트(hint bits)를 알아보자.
 
-개별 row의 헤더에 힌트 비트를 가지고 있는데 4가지를 가지고 있다.
+모든 row는 헤더안에 힌트 비트를 가지고 있는데 4가지를 가지고 있다.
 ```md
 XMIN_COMMITTED -- creating transaction is known committed
 XMIN_ABORTED -- creating transaction is known aborted
@@ -100,7 +100,7 @@ XMAX_ABORTED -- ditto
 // https://wiki.postgresql.org/wiki/Hint_Bits
 ```
 
-XMIN_COMMITTED 혹은 XMAX_COMMITTED가 true라면 커밋된 데이터를 뜻한다. where문으로 가져온 rows들에 붙어있는(헤더에 저장돼있는) hint bit를 확인하여 커밋된 데이터인지 아닌지 파악하여 필터링한다.
+**XMIN_COMMITTED 혹은 XMAX_COMMITTED가 true라면 커밋된 데이터를 뜻한다.** where문으로 가져온 rows들에 붙어있는(헤더에 저장돼있는) hint bit를 확인하여 커밋된 데이터인지 아닌지 파악하여 또 다시 필터링한다.
 
 #### pg_xact(pg_clog) 커밋로그
 hint bits의 값이 없다면 해당 row에 대해서 "pg_xact"를 확인한다.
