@@ -54,7 +54,62 @@ MVCC는 데이터베이스의 기본 저장방식인 **COMMIT**을 이용한다.
 더 자세히 알아보자.
 
 ### MVCC의 물리적 기반
-MVCC는 "snapshot"이라는 내부 데이터를 활용한다. (데이터베이스 복구할 때 이용하는 snapshot과는 이름만 같다.)
+Postgres MVCC는 Hint bit, commit log, snapshot, xmin, xmax 데이터를 이용하여 유효한 데이터를 판단한다. 
+
+#### xmin, xmax
+먼저 xmin, xmax부터 알야아한다.(hint bit에서도 쓰이고 snapshot에서도 쓰이기 때문에) xmin, xmax는 모든 row가 가지고 있는 컬럼이다. 일반 컬럼이 아니고 시스템 컬럼이라서 명시적으로 검색하지않는 이상 기본적으로는 보이지않는다. INSERT문이 실행되면서 row가 생성될 때 해당 트랜잭션의 ID를 해당 row의 xmin에 설정한다. xmin은 직관적으로 이해가 가지만 xmax는 생소할수 있다. postgres는 기본적으로 update 작업을 할 때 기존 데이터를 변경하지 않는다. 변경하는 대신에 기존 데이터의 xmax에 현재 트랜잭션 ID를 설정한다. 그리고 업데이드된 데이터를 가진 새로운 row를 생성한다. INSERT와 마찬가지로 xmin은 현재 트랜잭션 ID가 설정된다. DELETE는 기존 row의 xmax에 현재 트랜잭션 ID를 설정하고 끝이다. 특정 row에 xmax값이 존재한다면 그 값은 가장 최신의 값이 아니라고 생각할수 있다. (최신의 값이 아닐 뿐이지 유효한 값이 아니라고 생각하면 안된다. Repeatable Read에서는 최신의 값이 중요한게 아니기 때문이다. 아래에서 더 자세히 설명.)
+여기서 짚고 넘어가야할 하나는 xmin 값이 있다는게 커밋됐다는 의미는 아니다. row들이 커밋되기전에 임시로 저장되어있듯이 row들의 모든 컬럼들도(시스템컬럼 또한) 임시로 저장된 상태이다.
+
+xmin, xmax를 대략 알았다면 다시 처음으로 돌아가자.
+
+먼저 SELECT문을 WHERE절과 같이 실행하면 
+
+#### 1. WHERE 조건 확인
+WHERE절의 조건대로 데이터를 필터링한다.
+
+#### 2.1 커밋 여부 확인 - Hint bit
+WHERE 필터링된 row들의 header를 확인하여 hint bit를 확인하여 커밋 여부를 파악한다.
+
+모든 개별 row들은 개별 http 요청들이 헤더를 가지듯이 header를 가지고 있다. header안에 hint bit가 있는데 아래 4가지를 boolean값으로 가지고 있다.
+```
+XMIN_COMMITTED -- creating transaction is known committed
+XMIN_ABORTED -- creating transaction is known aborted
+XMAX_COMMITTED -- same, for the deleting transaction
+XMAX_ABORTED -- ditto
+```
+
+이름만 봐도 알수 있듯이 XMIN_COMMITTED가 true이면 커밋된 것을 의미하고 XMIN_ABORTED가 true라면 롤백된 트랜잭션을 의미한다.
+
+#### 2.2 커밋 여부 확인 - commit log
+사실 hint bit는 commit log의 캐시버전이다. 그래서 hint bit부터 확인하고 hint bit가 없다면 커밋 로그를 확인하게 된다.
+
+#### 3. snapshot
+mvcc에서 제일 중요한 게 snapshot이다. 커밋된 상태는 어디든 디스크에 바로 저장해두면 되는거라서 특별하다고 할수 없다. snapshot만이 postgres의 특별한 방법이다.(다만 그리 완벽한 매커니즘은 아니라 보완하는 기능이 추가돼있다.) 
+
+
+
+
+
+
+
+
+
+먼저 SELECT문에 있는 WHERE절을 실행하여 WHERE조건에 맞는 데이터들만 필터링한다.
+
+#### Hint bit
+데이터베이스의 모든 row들은 그들만의 header를 가지고 있는데 그 header안에 hint bit가 존재한다.
+```
+XMIN_COMMITTED -- creating transaction is known committed
+XMIN_ABORTED -- creating transaction is known aborted
+XMAX_COMMITTED -- same, for the deleting transaction
+XMAX_ABORTED -- ditto
+```
+위 4가지를 이용하여 where필터링을 거친 데이터들을 한번더 필터링한다. XMIN_COMMITTED가 true이고 XMAX_COMMITED가 false라면 
+
+가져온 row들의 Header에는 hint bit가 존재한다.
+
+
+Postgres MVCC는 "snapshot"이라는 내부 데이터를 활용한다. (데이터베이스 복구할 때 이용하는 snapshot과는 이름만 같다.)
 
 먼저 MVCC의 스냅샷이 어떤 형태인지 훑어보자.
 
