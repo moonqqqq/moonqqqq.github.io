@@ -18,7 +18,7 @@ LLM 응답 스트리밍 서버가 OOM(Out of memory)으로인해 꺼져버리는
 
 @Sse가 알아서 헤더 설정도 해주고 응답값도 잘 정리해주고, 커넥션 에러도 잘 처리해주기때문에 초기 구현에는 좋았지만. 트레픽이 몰릴때는 백프레셔 문제가 발생했다. 아래 코드는 아주 간단한 @Sse 구현 코드다.
 
-```ts
+```typescript
 @Sse('chat-message/:messageId')
   getLlmAnswer(@Param('messageId') messageId: string): Observable<MessageEvent> {
     return this.redisService.subscribe(`llm:answer:${messageId}`).pipe(

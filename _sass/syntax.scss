@@ -1,80 +1,200 @@
+/* One Dark Pro Theme - High Contrast */
 .highlight table td { padding: 5px; }
 .highlight table pre { margin: 0; }
 .highlight, .highlight .w {
-  color: #303030;
+  color: #abb2bf;
+  background-color: #282c34;
 }
+
 .highlight .err {
-  color: #151515;
-  background-color: #ac4142;
+  color: #e06c75;
 }
+
+/* Comments - gray italic */
 .highlight .c, .highlight .ch, .highlight .cd, .highlight .cm, .highlight .cpf, .highlight .c1, .highlight .cs {
-  color: #505050;
+  color: #5c6370;
+  font-style: italic;
 }
-.highlight .cp {
-  color: #f4bf75;
+
+/* Preprocessor/Decorator - yellow */
+.highlight .cp, .highlight .nd {
+  color: #e5c07b;
 }
+
+/* HTML/XML tags - red */
 .highlight .nt {
-  color: #f4bf75;
+  color: #e06c75;
 }
+
+/* Operators - cyan */
 .highlight .o, .highlight .ow {
-  color: #d0d0d0;
+  color: #56b6c2;
 }
+
+/* Punctuation */
 .highlight .p, .highlight .pi {
-  color: #d0d0d0;
+  color: #abb2bf;
 }
+
+/* Diff: inserted */
 .highlight .gi {
-  color: #90a959;
+  color: #98c379;
+  background-color: rgba(152, 195, 121, 0.2);
 }
+
+/* Diff: deleted */
 .highlight .gd {
-  color: #ac4142;
+  color: #e06c75;
+  background-color: rgba(224, 108, 117, 0.2);
 }
+
+/* Heading */
 .highlight .gh {
-  color: #6a9fb5;
-  background-color: #151515;
+  color: #61afef;
   font-weight: bold;
 }
-.highlight .k, .highlight .kn, .highlight .kp, .highlight .kr, .highlight .kv {
-  color: #aa759f;
-}
-.highlight .kc {
-  color: #d28445;
-}
-.highlight .kt {
-  color: #d28445;
-}
+
+/* Declaration keywords - purple (const, let, var, function, class, interface, type) */
 .highlight .kd {
-  color: #d28445;
+  color: #c678dd;
 }
+
+/* General keywords - purple */
+.highlight .k, .highlight .kv {
+  color: #c678dd;
+}
+
+/* Control flow - purple (return, if, else, for, while, async, await) */
+.highlight .kr {
+  color: #c678dd;
+}
+
+/* Import/Export - purple */
+.highlight .kn {
+  color: #c678dd;
+}
+
+/* Keyword property - purple */
+.highlight .kp {
+  color: #c678dd;
+}
+
+/* Keyword constants (true, false, null, undefined) - orange */
+.highlight .kc {
+  color: #d19a66;
+}
+
+/* Types - yellow (string, number, boolean, any, void) */
+.highlight .kt {
+  color: #e5c07b;
+}
+
+/* Strings - green */
 .highlight .s, .highlight .sb, .highlight .sc, .highlight .dl, .highlight .sd, .highlight .s2, .highlight .sh, .highlight .sx, .highlight .s1 {
-  color: #90a959;
+  color: #98c379;
 }
+
+/* String prefix - purple */
 .highlight .sa {
-  color: #aa759f;
+  color: #c678dd;
 }
+
+/* Regex - cyan */
 .highlight .sr {
-  color: #75b5aa;
+  color: #56b6c2;
 }
+
+/* String interpolation - orange */
 .highlight .si {
-  color: #8f5536;
+  color: #d19a66;
 }
+
+/* String escape - cyan */
 .highlight .se {
-  color: #8f5536;
+  color: #56b6c2;
 }
+
+/* Namespace - yellow */
 .highlight .nn {
-  color: #f4bf75;
+  color: #e5c07b;
 }
+
+/* Class/Interface name - yellow */
 .highlight .nc {
-  color: #f4bf75;
+  color: #e5c07b;
 }
+
+/* Constants - orange */
 .highlight .no {
-  color: #f4bf75;
+  color: #d19a66;
 }
+
+/* Attributes/Properties - red */
 .highlight .na {
-  color: #6a9fb5;
+  color: #e06c75;
 }
+
+/* Numbers - orange */
 .highlight .m, .highlight .mb, .highlight .mf, .highlight .mh, .highlight .mi, .highlight .il, .highlight .mo, .highlight .mx {
-  color: #90a959;
+  color: #d19a66;
 }
+
+/* Symbols - green */
 .highlight .ss {
-  color: #90a959;
+  color: #98c379;
+}
+
+/* Function/Method names - blue */
+.highlight .nf, .highlight .fm {
+  color: #61afef;
+}
+
+/* Variables - red */
+.highlight .nv, .highlight .vi, .highlight .vm, .highlight .vg {
+  color: #e06c75;
+}
+
+/* Built-in names - cyan */
+.highlight .nb {
+  color: #56b6c2;
+}
+
+/* Name/Identifier - red */
+.highlight .n {
+  color: #e06c75;
+}
+
+/* Object property - red */
+.highlight .ni {
+  color: #e06c75;
+}
+
+/* Line numbers styling */
+.highlight .lineno {
+  color: #4b5263;
+  padding-right: 10px;
+  margin-right: 10px;
+  user-select: none;
+}
+
+.highlight table {
+  border-spacing: 0;
+  border-collapse: collapse;
+  border: none;
+}
+
+.highlight table td {
+  border: none;
+}
+
+.highlight .gutter {
+  background-color: #282c34;
+  padding-right: 10px;
+  text-align: right;
+  color: #4b5263;
+  user-select: none;
+}
+
+.highlight .code {
+  padding-left: 10px;
 }
