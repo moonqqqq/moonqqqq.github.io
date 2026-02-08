@@ -2,9 +2,9 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
  <title>김문규블로그</title>
- <link href="http://localhost:4000/atom.xml" rel="self"/>
- <id>http://localhost:4000</id>
- <updated>2024-08-10T13:29:57+09:00</updated>
+ <link href="http://0.0.0.0:4000/atom.xml" rel="self"/>
+ <id>http://0.0.0.0:4000</id>
+ <updated>2026-02-08T06:33:13-06:00</updated>
  <author>
    <name>moonq kim</name>
    <uri>https://moonqqqq.github.io</uri>
@@ -14,10 +14,20 @@
  
 
  <entry>
+   <title>Node.js의 스트림 배압 처리 고도화 (Observable의 한계점)</title>
+   <link href="http://0.0.0.0:4000/sse-and-observable-limitation-on-memory"/>
+   <id>http://0.0.0.0:4000/sse-and-observable-limitation-on-memory</id>
+   <updated>2024-02-04T00:00:00-06:00</updated>
+   <content type="html">&lt;p&gt;LLM 응답 스트리밍 서버가 OOM(Out of memory)으로인해 꺼져버리는 현상이 간간히 로그에 찍혀있었다.&lt;/p&gt; &lt;p&gt;기존 서버는 llm 응답값을 sse로 스트리밍해주는 서버다. 단순히 @Sse 데코레이터에 Observable을 리턴하는 형식으로 구현되어있다. 단순화하면 아래 구조로 표현할 수 있다.&lt;/p&gt; &lt;blockquote&gt; &lt;p&gt;Stream API server –(subscribe)–&amp;gt; Redis pubsub &amp;lt;–(push)– llm 워커에서 llm 응답값 전달&lt;/p&gt; &lt;/blockquote&gt; &lt;p&gt;@Sse가 알아서 헤더 설정도...</content>
+ </entry>
+
+ 
+
+ <entry>
    <title>서버가 데이터를 받기까지 [epoll] - 서버가 작동하는 흐름 2</title>
-   <link href="http://localhost:4000/from-the-libuv-server-series-2"/>
-   <id>http://localhost:4000/from-the-libuv-server-series-2</id>
-   <updated>2024-01-23T00:00:00+09:00</updated>
+   <link href="http://0.0.0.0:4000/from-the-libuv-server-series-2"/>
+   <id>http://0.0.0.0:4000/from-the-libuv-server-series-2</id>
+   <updated>2024-01-23T00:00:00-06:00</updated>
    <content type="html">&lt;h4 id=&quot;시리즈-목차&quot;&gt;시리즈 목차&lt;/h4&gt; &lt;p&gt;&lt;a href=&quot;https://moonqqqq.github.io/before-arriving-server-server-series-1&quot;&gt;1.서버가 데이터를 받기까지 [운영체제에서]&lt;/a&gt; &lt;br /&gt; &lt;a href=&quot;https://moonqqqq.github.io/from-the-libuv-server-series-2&quot;&gt;&lt;u&gt;(현재글) 2.서버가 데이터를 받기까지 [libuv - epoll]&lt;/u&gt;&lt;/a&gt; &lt;br /&gt; 3.서버가 받은 데이터가 어떻게 처리되는지. Node.js만의 방식이 어떤지 정리한다. &lt;br /&gt; 4.Node.js만의 방식을 하나하나 조금 더 디테일하게 - Event loop, Libuv, V8, JS&lt;/p&gt; &lt;hr /&gt; &lt;p&gt;&lt;br /&gt;&lt;/p&gt; &lt;p&gt;이전 단계에서 데이터가...</content>
  </entry>
 
@@ -25,19 +35,29 @@
 
  <entry>
    <title>API 서버가 데이터를 받기까지 (운영체제에서) - 서버가 작동하는 흐름 1</title>
-   <link href="http://localhost:4000/before-arriving-server-server-series-1"/>
-   <id>http://localhost:4000/before-arriving-server-server-series-1</id>
-   <updated>2024-01-02T00:00:00+09:00</updated>
+   <link href="http://0.0.0.0:4000/before-arriving-server-server-series-1"/>
+   <id>http://0.0.0.0:4000/before-arriving-server-server-series-1</id>
+   <updated>2024-01-02T00:00:00-06:00</updated>
    <content type="html">&lt;h4 id=&quot;시리즈-목차&quot;&gt;시리즈 목차&lt;/h4&gt; &lt;p&gt;&lt;a href=&quot;https://moonqqqq.github.io/before-arriving-server-server-series-1&quot;&gt;&lt;u&gt;(현재글) 1.서버가 데이터를 받기까지 [운영체제에서]&lt;/u&gt;&lt;/a&gt; &lt;br /&gt; &lt;a href=&quot;https://moonqqqq.github.io/from-the-libuv-server-series-2&quot;&gt;2.서버가 데이터를 받기까지 [libuv]&lt;/a&gt; &lt;br /&gt; 3.서버가 받은 데이터가 어떻게 처리되는지. Node.js만의 방식이 어떤지 정리한다. &lt;br /&gt; 4.Node.js만의 방식을 하나하나 조금 더 디테일하게 - Event loop, Libuv, V8, JS&lt;/p&gt; &lt;hr /&gt; &lt;p&gt;&lt;br /&gt;&lt;/p&gt; &lt;h1 id=&quot;api-서버가-데이터를-받기까지&quot;&gt;API 서버가 데이터를 받기까지.&lt;/h1&gt;...</content>
  </entry>
 
  
 
  <entry>
+   <title>백엔드 동시성 - 1. Postgres 가시성</title>
+   <link href="http://0.0.0.0:4000/mvcc"/>
+   <id>http://0.0.0.0:4000/mvcc</id>
+   <updated>2023-12-02T00:00:00-06:00</updated>
+   <content type="html">&lt;p&gt;데이터베이스단에서 동시성 확보는 디비 자체적으로 해주는 것과 프로그래머가 직접 코드로 짜야하는 걸로 나뉜다. 그중 데이터베이스에서 제공해주는 부분을 알아본다.&lt;/p&gt; &lt;p&gt;“1. 기본적인 잠금(shared/exclusive lock)”과 “2. Isolation level 구현(MVCC)” 이 두가지가 데이터베이스에서 이미 완성시켜둔 동시성 도구들이다. 이 둘의 조합으로 기본적인 동시성 제어를 구성한다.&lt;/p&gt; &lt;h2 id=&quot;1-기본-잠금---shared-lock-exclusive-lock&quot;&gt;1. 기본 잠금 - Shared Lock, Exclusive Lock&lt;/h2&gt; &lt;p&gt;모든...</content>
+ </entry>
+
+ 
+
+ <entry>
    <title>Socket.io 무중단 배포</title>
-   <link href="http://localhost:4000/socketio-non-stop-deployment"/>
-   <id>http://localhost:4000/socketio-non-stop-deployment</id>
-   <updated>2023-07-23T00:00:00+09:00</updated>
+   <link href="http://0.0.0.0:4000/socketio-non-stop-deployment"/>
+   <id>http://0.0.0.0:4000/socketio-non-stop-deployment</id>
+   <updated>2023-07-23T00:00:00-05:00</updated>
    <content type="html">&lt;p&gt;채팅 서버 무중단 배포 방식을 정리하고 가자.&lt;/p&gt; &lt;p&gt;BlueGreen, Canary과 같은 배포 방식에 관련된 글이라기보다는 무중단 배포에 있어 채팅 서버의 어떤 점들을 유의해야하는지에 대한 글이겠다. (Socket.io를 기준으로)&lt;/p&gt; &lt;p&gt;Socket 배포에 있어서 중요한 건 “client-server간의 관련 데이터 관리”, “client-server connection 관리”이 두가지가 되겠다.&lt;/p&gt; &lt;h2 id=&quot;socketio-관련-데이터-관리&quot;&gt;socket.io 관련 데이터 관리.&lt;/h2&gt; &lt;p&gt;socket.io에서는 실시간 통신을 위해 필요한...</content>
  </entry>
 
@@ -45,20 +65,30 @@
 
  <entry>
    <title>Nest.js 모듈 구조 관리 (Avoiding circular dependency)</title>
-   <link href="http://localhost:4000/dependnecy-manage-on-nestjs"/>
-   <id>http://localhost:4000/dependnecy-manage-on-nestjs</id>
-   <updated>2023-06-30T00:00:00+09:00</updated>
+   <link href="http://0.0.0.0:4000/dependnecy-manage-on-nestjs"/>
+   <id>http://0.0.0.0:4000/dependnecy-manage-on-nestjs</id>
+   <updated>2023-06-30T00:00:00-05:00</updated>
    <content type="html">&lt;p&gt;어떤 아키텍쳐를 쓰던 DI(dependency injection)는 대부분 이용된다. Nest.js의 기본 구조도 그렇다. 그런데 DI로 개발하다보면 의존성이 꼬이는 일이 발생하는 경우가 있다. 대부분이 &lt;strong&gt;circular dependency&lt;/strong&gt;로 나타난다. 이 때 &lt;em&gt;lazy loading&lt;/em&gt;을 이용해서 circular dependency 발생 없이 개발할수도 있지만 상호의존은 최악의 구조이기 때문에 최대한 불가피한 경우에만 써야한다.&lt;/p&gt; &lt;p&gt;내가 관리하는 프로젝트들에서 상호 의존을 피하기 위한...</content>
  </entry>
 
  
 
  <entry>
+   <title>Join 알고리즘 대표적 3가지 특징/최적화</title>
+   <link href="http://0.0.0.0:4000/join-algorithms-2"/>
+   <id>http://0.0.0.0:4000/join-algorithms-2</id>
+   <updated>2023-01-06T00:00:00-06:00</updated>
+   <content type="html">&lt;h4 id=&quot;시리즈-목차&quot;&gt;시리즈 목차&lt;/h4&gt; &lt;p&gt;&lt;a href=&quot;https://moonqqqq.github.io/join-algorithms-1&quot;&gt;1. Join 알고리즘의 종류&lt;/a&gt; &lt;br /&gt; &lt;u&gt;(현재글) 2. Join 알고리즘 최적화&lt;/u&gt; &lt;br /&gt;&lt;/p&gt; &lt;h1 id=&quot;3가지-조인-비교&quot;&gt;3가지 조인 비교&lt;/h1&gt; &lt;p&gt;3가지 조인 알고리즘이 어떤 상황에 선택되는지(유리한지) 알아보자. 일단은 시간복잡도부터 따져보면. Nested Loop은 O(N*M), Hash와 Sort-Merge는 O(N+M)이다.&lt;/p&gt; &lt;p&gt;조인 알고리즘은 &lt;strong&gt;WHERE문으로 필터링된 데이터의 갯수&lt;/strong&gt;에 따라 첫번째로 갈린다. WHERE문으로 필터링이 많이돼서 Join할...</content>
+ </entry>
+
+ 
+
+ <entry>
    <title>Join 알고리즘 대표적 3가지</title>
-   <link href="http://localhost:4000/join-algorithms-1"/>
-   <id>http://localhost:4000/join-algorithms-1</id>
-   <updated>2023-01-03T00:00:00+09:00</updated>
-   <content type="html">&lt;h4 id=&quot;시리즈-목차&quot;&gt;시리즈 목차&lt;/h4&gt; &lt;p&gt;&lt;u&gt;(현재글) 1. Join 알고리즘의 종류&lt;/u&gt; &lt;br /&gt; &lt;a href=&quot;&quot;&gt;2. Join 알고리즘 최적화&lt;/a&gt; &lt;br /&gt;&lt;/p&gt; &lt;hr /&gt; &lt;p&gt;&lt;br /&gt; Join을 포함한 쿼리가 실행될 때 데이터베이스 프로세서는 지금 디비 상황에 맞는 join 알고리즘을 선택해야 한다. 대표적인 3가지를 알아보자.&lt;/p&gt; &lt;h1 id=&quot;nested-loop-join&quot;&gt;Nested Loop Join&lt;/h1&gt; &lt;p&gt;이름 그대로 중첩 loop 방식으로 조건에 맞는...</content>
+   <link href="http://0.0.0.0:4000/join-algorithms-1"/>
+   <id>http://0.0.0.0:4000/join-algorithms-1</id>
+   <updated>2023-01-03T00:00:00-06:00</updated>
+   <content type="html">&lt;h4 id=&quot;시리즈-목차&quot;&gt;시리즈 목차&lt;/h4&gt; &lt;p&gt;&lt;u&gt;(현재글) 1. Join 알고리즘의 종류&lt;/u&gt; &lt;br /&gt; &lt;a href=&quot;https://moonqqqq.github.io/join-algorithms-1&quot;&gt;2. Join 알고리즘 최적화&lt;/a&gt; &lt;br /&gt;&lt;/p&gt; &lt;hr /&gt; &lt;p&gt;&lt;br /&gt; Join을 포함한 쿼리가 실행될 때 데이터베이스 프로세서는 지금 디비 상황에 맞는 join 알고리즘을 선택해야 한다. 대표적인 3가지를 알아보자.&lt;/p&gt; &lt;h1 id=&quot;nested-loop-join&quot;&gt;Nested Loop Join&lt;/h1&gt; &lt;p&gt;이름 그대로 중첩 loop 방식으로 조건에 맞는...</content>
  </entry>
 
  

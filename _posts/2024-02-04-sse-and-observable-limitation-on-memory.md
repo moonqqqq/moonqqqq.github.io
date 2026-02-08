@@ -14,9 +14,7 @@ LLM 응답 스트리밍 서버가 OOM(Out of memory)으로인해 꺼져버리는
 
 기존 서버는 llm 응답값을 sse로 스트리밍해주는 서버다. 단순히 @Sse 데코레이터에 Observable을 리턴하는 형식으로 구현되어있다. 단순화하면 아래 구조로 표현할 수 있다.
 
-```
-Stream API server --(subscribe)--> Redis pubsub  <--(push)-- llm 워커에서 llm 응답값 전달
-```
+>Stream API server --(subscribe)--> Redis pubsub  <--(push)-- llm 워커에서 llm 응답값 전달
 
 @Sse가 알아서 헤더 설정도 해주고 응답값도 잘 정리해주고, 커넥션 에러도 잘 처리해주기때문에 초기 구현에는 좋았지만. 트레픽이 몰릴때는 백프레셔 문제가 발생했다. 아래 코드는 아주 간단한 @Sse 구현 코드다.
 
@@ -31,7 +29,8 @@ Stream API server --(subscribe)--> Redis pubsub  <--(push)-- llm 워커에서 ll
 
 위 서버에 동시에 많은 트레픽을 쏴버리면 아래처럼 OOM 에러가 발생하면서 서버가 종료된다.
 
-```server-1  | ======================
+```
+server-1  | ======================
 server-1  | === Memory Monitor ===
 server-1  | Heap Used: 46MB
 server-1  | Heap Total: 59MB

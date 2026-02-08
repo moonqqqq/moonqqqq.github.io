@@ -131,8 +131,16 @@
 	
 
 	  <li class="post">
+	  	<h2><a href="/sse-and-observable-limitation-on-memory">Node.js의 스트림 배압 처리 고도화 (Observable의 한계점)</a></h2>
+      <time datetime="2024-02-04T00:00:00-06:00" class="by-line"> <i>04 Feb 2024</i> </time>
+	  	<p>LLM 응답 스트리밍 서버가 OOM(Out of memory)으로인해 꺼져버리는 현상이 간간히 로그에 찍혀있었다. 기존 서버는 llm 응답값을 sse로 스트리밍해주는 서버다. 단순히 @Sse 데코레이터에 Observable을 리턴하는 형식으로 구현되어있다. 단순화하면 아래 구조로 표현할 수 있다. Stream API server –(subscribe)–&gt; Redis pubsub &lt;–(push)– llm 워커에서 llm 응답값 전달 @Sse가 알아서 헤더 설정도 해주고 응답값도...</p>
+	  </li>
+
+    
+
+	  <li class="post">
 	  	<h2><a href="/from-the-libuv-server-series-2">API 서버가 데이터를 받기까지 [epoll] - 서버가 작동하는 흐름 2</a></h2>
-      <time datetime="2024-01-23T00:00:00+09:00" class="by-line"> <i>23 Jan 2024</i> </time>
+      <time datetime="2024-01-23T00:00:00-06:00" class="by-line"> <i>23 Jan 2024</i> </time>
 	  	<p>시리즈 목차 1.서버가 데이터를 받기까지 [운영체제에서] (현재글) 2.서버가 데이터를 받기까지 [libuv - epoll] 3.서버가 받은 데이터가 어떻게 처리되는지. Node.js만의 방식이 어떤지 정리한다. 4.Node.js만의 방식을 하나하나 조금 더 디테일하게 - Event loop, Libuv, V8, JS 이전 단계에서 데이터가 “receive socket buffer”에 도착했다. 이제 Node.js 서버가 데이터를 가져와서 처리해야한다. 데이터를 가져오는 일을...</p>
 	  </li>
 
@@ -140,15 +148,23 @@
 
 	  <li class="post">
 	  	<h2><a href="/before-arriving-server-server-series-1">API 서버가 데이터를 받기까지 (운영체제에서) - 서버가 작동하는 흐름 1</a></h2>
-      <time datetime="2024-01-02T00:00:00+09:00" class="by-line"> <i>02 Jan 2024</i> </time>
+      <time datetime="2024-01-02T00:00:00-06:00" class="by-line"> <i>02 Jan 2024</i> </time>
 	  	<p>시리즈 목차 (현재글) 1.서버가 데이터를 받기까지 [운영체제에서] 2.서버가 데이터를 받기까지 [libuv] 3.서버가 받은 데이터가 어떻게 처리되는지. Node.js만의 방식이 어떤지 정리한다. 4.Node.js만의 방식을 하나하나 조금 더 디테일하게 - Event loop, Libuv, V8, JS API 서버가 데이터를 받기까지. 우리가 만든 Node.js 서버가 데이터를 받기위해선 포트 번호(ex. 3000, 8080)와 바인딩되어야한다. 그래야만 운영체제가 node.js...</p>
 	  </li>
 
     
 
 	  <li class="post">
+	  	<h2><a href="/mvcc">Postgres 동시성 [기본락과 MVCC]</a></h2>
+      <time datetime="2023-12-02T00:00:00-06:00" class="by-line"> <i>02 Dec 2023</i> </time>
+	  	<p>데이터베이스단에서 동시성 확보는 디비 자체적으로 해주는 것과 프로그래머가 직접 코드로 짜야하는 걸로 나뉜다. 그중 데이터베이스에서 제공해주는 부분을 알아본다. “1. 기본적인 잠금(shared/exclusive lock)”과 “2. Isolation level 구현(MVCC)” 이 두가지가 데이터베이스에서 이미 완성시켜둔 동시성 도구들이다. 이 둘의 조합으로 기본적인 동시성 제어를 구성한다. 1. 기본 잠금 - Shared Lock, Exclusive Lock 모든 데이터베이스에서는...</p>
+	  </li>
+
+    
+
+	  <li class="post">
 	  	<h2><a href="/socketio-non-stop-deployment">채팅서버 무중단 배포(Socket.io)</a></h2>
-      <time datetime="2023-07-23T00:00:00+09:00" class="by-line"> <i>23 Jul 2023</i> </time>
+      <time datetime="2023-07-23T00:00:00-05:00" class="by-line"> <i>23 Jul 2023</i> </time>
 	  	<p>채팅 서버 무중단 배포 방식을 정리하고 가자. BlueGreen, Canary과 같은 배포 방식에 관련된 글이라기보다는 무중단 배포에 있어 채팅 서버의 어떤 점들을 유의해야하는지에 대한 글이겠다. (Socket.io를 기준으로) Socket 배포에 있어서 중요한 건 “client-server간의 관련 데이터 관리”, “client-server connection 관리”이 두가지가 되겠다. socket.io 관련 데이터 관리. socket.io에서는 실시간 통신을 위해 필요한 데이터들이...</p>
 	  </li>
 
@@ -156,15 +172,23 @@
 
 	  <li class="post">
 	  	<h2><a href="/dependnecy-manage-on-nestjs">Nest.js 모듈 구조 관리 (Avoiding circular dependency)</a></h2>
-      <time datetime="2023-06-30T00:00:00+09:00" class="by-line"> <i>30 Jun 2023</i> </time>
+      <time datetime="2023-06-30T00:00:00-05:00" class="by-line"> <i>30 Jun 2023</i> </time>
 	  	<p>어떤 아키텍쳐를 쓰던 DI(dependency injection)는 대부분 이용된다. Nest.js의 기본 구조도 그렇다. 그런데 DI로 개발하다보면 의존성이 꼬이는 일이 발생하는 경우가 있다. 대부분이 circular dependency로 나타난다. 이 때 lazy loading을 이용해서 circular dependency 발생 없이 개발할수도 있지만 상호의존은 최악의 구조이기 때문에 최대한 불가피한 경우에만 써야한다. 내가 관리하는 프로젝트들에서 상호 의존을 피하기 위한...</p>
 	  </li>
 
     
 
 	  <li class="post">
+	  	<h2><a href="/join-algorithms-2">Join 알고리즘 특징/최적화</a></h2>
+      <time datetime="2023-01-06T00:00:00-06:00" class="by-line"> <i>06 Jan 2023</i> </time>
+	  	<p>시리즈 목차 1. Join 알고리즘의 종류 (현재글) 2. Join 알고리즘 최적화 3가지 조인 비교 3가지 조인 알고리즘이 어떤 상황에 선택되는지(유리한지) 알아보자. 일단은 시간복잡도부터 따져보면. Nested Loop은 O(N*M), Hash와 Sort-Merge는 O(N+M)이다. 조인 알고리즘은 WHERE문으로 필터링된 데이터의 갯수에 따라 첫번째로 갈린다. WHERE문으로 필터링이 많이돼서 Join할 데이터가 적다면 Nested Loop 조인을 이용한다. WHERE문으로...</p>
+	  </li>
+
+    
+
+	  <li class="post">
 	  	<h2><a href="/join-algorithms-1">Join 알고리즘 대표적 3가지</a></h2>
-      <time datetime="2023-01-03T00:00:00+09:00" class="by-line"> <i>03 Jan 2023</i> </time>
+      <time datetime="2023-01-03T00:00:00-06:00" class="by-line"> <i>03 Jan 2023</i> </time>
 	  	<p>시리즈 목차 (현재글) 1. Join 알고리즘의 종류 2. Join 알고리즘 최적화 Join을 포함한 쿼리가 실행될 때 데이터베이스 프로세서는 지금 디비 상황에 맞는 join 알고리즘을 선택해야 한다. 대표적인 3가지를 알아보자. Nested Loop Join 이름 그대로 중첩 loop 방식으로 조건에 맞는 데이터를 찾는다. 중첩 for문이라고 생각하면 된다. 첫번째 테이블에서 데이터를 하나 선택하고...</p>
 	  </li>
 
