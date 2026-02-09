@@ -81,10 +81,10 @@ Observable이 작동하는 방식을 파악해보니 아래와 같았다.
 데이터소스 -> observer.next() -> [RxJS 전용(concatMap) 버퍼] -> [WritableStream 버퍼] -> [Socket 버퍼]
 ```
 
-Node.js 자체적으로 
+Nest.js 자체적으로 
 1. TCP socket 버퍼에 데이터가 꽉차면 writableStream 버퍼에서 데이터를 안보내게 되고. 
 2. WritableStream 버퍼에 데이터가 꽉차면 RxJS 전용 버퍼에서 데이터를 안보내게 된다. 
-3. **하지만 RxJS의 버퍼는 꽉찼는지 아닌지에 대한 기준이 존재하지않았다.** 
+3. **하지만 RxJS의 버퍼에서는 데이터가 꽉찼는지아닌지 확인하는 로직이 따로 없다.** 
 그러다보니 당연하게도 Out Of Memory가 발생할수 밖에 없었다. 클라이언트쪽이던 서버쪽이던 네트워크문제가 생긴다면 어쩔수 없는거였다.
 
 ### Push 매커니즘이기때문에
