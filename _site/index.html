@@ -48,8 +48,6 @@
 	  
 	    
 	  
-	    
-	  
     
     <!-- Nav links -->
 	  <a href="https://github.com/moonqqqq" aria-label="Homepage" class="footer-octicon" title="GitHub">
@@ -94,8 +92,6 @@
 	    
 	      
 	        <a href="/about" title=""></a>
-	      
-	    
 	      
 	    
 	      
@@ -198,6 +194,30 @@
 
     
 
+	  <li class="post">
+	  	<h2><a href="/dependnecy-manage-on-nestjs">Nest.js 모듈 구조 관리 (Avoiding circular dependency)</a></h2>
+      <time datetime="2023-06-30T00:00:00-05:00" class="by-line"> <i>30 Jun 2023</i> </time>
+	  	<p>어떤 아키텍쳐를 쓰던 DI(dependency injection)는 대부분 이용된다. Nest.js의 기본 구조도 그렇다. 그런데 DI로 개발하다보면 의존성이 꼬이는 일이 발생하는 경우가 있다. 대부분이 circular dependency로 나타난다. 이 때 lazy loading을 이용해서 circular dependency 발생 없이 개발할수도 있지만 상호의존은 최악의 구조이기 때문에 최대한 불가피한 경우에만 써야한다. 내가 관리하는 프로젝트들에서 상호 의존을 피하기 위한...</p>
+	  </li>
+
+    
+
+	  <li class="post">
+	  	<h2><a href="/join-algorithms-2">Join 알고리즘 특징/최적화</a></h2>
+      <time datetime="2023-01-06T00:00:00-06:00" class="by-line"> <i>06 Jan 2023</i> </time>
+	  	<p>시리즈 목차 1. Join 알고리즘의 종류 (현재글) 2. Join 알고리즘 최적화 3가지 조인 비교 3가지 조인 알고리즘이 어떤 상황에 선택되는지(유리한지) 알아보자. 일단은 시간복잡도부터 따져보면. Nested Loop은 O(N*M), Hash와 Sort-Merge는 O(N+M)이다. 조인 알고리즘은 WHERE문으로 필터링된 데이터의 갯수에 따라 첫번째로 갈린다. WHERE문으로 필터링이 많이돼서 Join할 데이터가 적다면 Nested Loop 조인을 이용한다. WHERE문으로...</p>
+	  </li>
+
+    
+
+	  <li class="post">
+	  	<h2><a href="/join-algorithms-1">Join 알고리즘 대표적 3가지</a></h2>
+      <time datetime="2023-01-03T00:00:00-06:00" class="by-line"> <i>03 Jan 2023</i> </time>
+	  	<p>시리즈 목차 (현재글) 1. Join 알고리즘의 종류 2. Join 알고리즘 최적화 Join을 포함한 쿼리가 실행될 때 데이터베이스 프로세서는 지금 디비 상황에 맞는 join 알고리즘을 선택해야 한다. 대표적인 3가지를 알아보자. Nested Loop Join 이름 그대로 중첩 loop 방식으로 조건에 맞는 데이터를 찾는다. 중첩 for문이라고 생각하면 된다. 첫번째 테이블에서 데이터를 하나 선택하고...</p>
+	  </li>
+
+    
+
 </ul>
 
 
@@ -205,26 +225,6 @@
 		
 		  <!-- Pagination links -->
       
-        <div class="pagination">
-          
-            <span class="page-item">&laquo;</span>
-          
-        
-          
-            
-              <span class="page-item">1</span>
-            
-          
-            
-              <a href="/page2/" class="page-item">2</a>
-            
-          
-        
-          
-            <a href="/page2/" class="page-item">&raquo;</a>
-          
-        </div>
-        
 
 	  </div>
 	    
