@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<!-- Meta -->
+	<meta charset="UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+	<meta name="generator" content="Jekyll">
+
+	<title>카프카 프로듀서 필수 설정값</title>
+  <meta name="description" content="카프카 프로듀서 필수 설정값">
+
+	<!-- CSS & fonts -->
+	<link rel="stylesheet" href="/css/main.css">
+
+	<!-- RSS -->
+	<link href="/atom.xml" type="application/atom+xml" rel="alternate" title="ATOM Feed" />
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/png" href="img/favicon.png">
+
+</head>
+
+
+<body>
+	<div id="wrap">
+	  	
+	  	<!-- Navigation -->
+	  	<nav id="nav">
+	<div id="nav-list">
+		<a href="//">Home</a>
+
+		<!-- Nav pages -->
+	  
+	    
+	  
+	    
+	      <a href="//about" title=""></a>
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+	    
+	  
+    
+    <!-- Nav links -->
+	  <a href="https://github.com/moonqqqq" aria-label="Homepage" class="footer-octicon" title="GitHub">
+    <svg aria-hidden="true" class="octicon octicon-mark-github" height="20" version="1.1" viewBox="0 0 16 16" width="24"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+</svg>
+</a>
+
+	</div>
+  
+  <!-- Nav footer -->
+	
+	  <footer>
+	
+	<span>version 1.0.0</span>
+
+</footer>
+	
+
+</nav>
+
+    
+    <!-- Icon menu -->
+	  <a id="nav-menu">
+	  	<div id="menu"></div>
+	  </a>
+
+      <!-- Header -->
+      
+        <header id="header" class="parent justify-spaceBetween">
+  <div class="inner w100 relative">
+    <span class="f-left">  
+      <a href="//">
+        <h1>
+          <span>김문규블로그</span>
+        </h1>
+      </a>
+    </span>
+    <span id="nav-links" class="absolute right bottom">
+      <!-- Nav pages -->
+	    
+	      
+	    
+	      
+	        <a href="/about" title=""></a>
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+	      
+	    
+      
+      <!-- Nav links -->
+	    <a href="https://github.com/moonqqqq" aria-label="Homepage" class="footer-octicon" title="GitHub">
+    <svg aria-hidden="true" class="octicon octicon-mark-github" height="20" version="1.1" viewBox="0 0 16 16" width="24"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+</svg>
+</a>
+
+    </span>
+  </div>
+</header>
+
+
+
+
+      
+
+    <!-- Main content -->
+	  <div id="container">
+		  
+		<main>
+
+			<article id="post-page">
+	<h2>카프카 프로듀서 필수 설정값</h2>		
+	<time datetime="2025-01-08T00:00:00-06:00" class="by-line">08 Jan 2025</time>
+	<div class="content">
+
+		<p>기본적인 프로듀서 설정값들을 정리한 글이다.
+<br /></p>
+
+<p>실무에서 쓰일만한 설정값들을 대충 훑어보고 개념으로 넘어가자.</p>
+
+<p>마이크로서비스에서 카프카를 이용할 때는 속도가 중요하다. 그럴 때는 아래와 같은 설정이 필요하다.</p>
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre></td><td class="rouge-code"><pre><span class="c1">// 마이크로서비스</span>
+<span class="nx">batch</span><span class="p">.</span><span class="nx">size</span><span class="o">=</span><span class="mi">32768</span>
+<span class="nx">linger</span><span class="p">.</span><span class="nx">ms</span><span class="o">=</span><span class="mi">5</span>
+<span class="nx">acks</span><span class="o">=</span><span class="mi">1</span>
+<span class="nx">max</span><span class="p">.</span><span class="k">in</span><span class="p">.</span><span class="nx">flight</span><span class="p">.</span><span class="nx">requests</span><span class="p">.</span><span class="nx">per</span><span class="p">.</span><span class="nx">connection</span><span class="o">=</span><span class="mi">5</span>
+<span class="nx">enable</span><span class="p">.</span><span class="nx">idempotence</span><span class="o">=</span><span class="kc">true</span>
+<span class="nx">compression</span><span class="p">.</span><span class="kd">type</span><span class="o">=</span><span class="nx">snappy</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>반면에 로그를 처리하는 용도로 카프카를 이용한다면 아래와 같은 설정이면 충분하다.</p>
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre></td><td class="rouge-code"><pre><span class="c1">// 로깅용</span>
+<span class="nx">batch</span><span class="p">.</span><span class="nx">size</span><span class="o">=</span><span class="mi">262144</span>
+<span class="nx">linger</span><span class="p">.</span><span class="nx">ms</span><span class="o">=</span><span class="mi">300</span>
+<span class="nx">acks</span><span class="o">=</span><span class="mi">0</span>
+<span class="nx">max</span><span class="p">.</span><span class="k">in</span><span class="p">.</span><span class="nx">flight</span><span class="p">.</span><span class="nx">requests</span><span class="p">.</span><span class="nx">per</span><span class="p">.</span><span class="nx">connection</span><span class="o">=</span><span class="mi">10</span>
+<span class="nx">enable</span><span class="p">.</span><span class="nx">idempotence</span><span class="o">=</span><span class="kc">false</span>
+<span class="nx">compression</span><span class="p">.</span><span class="kd">type</span><span class="o">=</span><span class="nx">zstd</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>위 6가지 설정은 아주 기본적인 프로듀서 옵션들인데 성능 vs 안정성에 따라 위 옵션들의 값이 바뀌게 된다.</p>
+
+<p>하나하나 알아보자.</p>
+
+<p><br /></p>
+
+<p><strong>사전 지식</strong>
+Record: 하나의 이벤트, 하나의 메시지.
+Batch: Record 묶음. 카프카는 보통 이벤트 하나하나를 전송하지않고 Batch로 묶어서 보낸다.</p>
+
+<p><br /></p>
+
+<h1 id="한번-메시지-보낼때-얼마나-보낼지">한번 메시지 보낼때 얼마나 보낼지</h1>
+<p><strong>“batch.size”</strong>
+<br /></p>
+
+<p>프로듀서가 메시지를 보낼 때의 최대 크기를 설정한다. 기본 값은 16KB.</p>
+
+<p>기본적으로 프로듀서는 메시지를 보내기전에 batch buffer에 쌓는다. 그리고 batch.size 값에 도달하면 바로 전송된다. 혹은 아래 설명할 linger.ms 시간에 도달하면 batch.size에 도달하지않아도 브로커로 batch를 전송된다.</p>
+
+<p>당연하게도 프로듀서와 브로커 간의 커뮤니케이션이 많으면 많아질수록 하드웨어에 부담이 늘어난다. 커뮤니케이션 횟수가 많아지면 네트워크 부하는 당연히 커지고. “네트워크 패킷 -&gt; 카프카 객체”로 직렬화하는 일도 많아지니 CPU 사용량도 늘어난다.</p>
+
+<p>그래서 신속한 처리가 필요할 때는 batch.size를 작게 설정한다.</p>
+
+<p>카프카가 마이크로서비스에서 이용된다면 batch.size를 최소화(32kb이하)해서 이용하고 로그처리와 같이 급하지않은 것들은 꽤 큰 값(256kb 정도)을 이용한다.</p>
+
+<h1 id="메시지를-얼마-시간-동안-모아서-보낼까">메시지를 얼마 시간 동안 모아서 보낼까</h1>
+<p><strong>“linger.ms”</strong>
+<br /></p>
+
+<p>batch.size랑 똑같다고 생각하면 된다. 다만 사이즈가 아니라 시간일뿐이다. batch를 보내는 텀을 설정하는 옵션이고.
+작게 설정하면 batch.size 설정 값만큼 데이터가 차지않아도 시간이 되면 batch를 보낸다. 나머지는 똑같다.</p>
+
+<h1 id="보낸-메시지를-잘-저장했는지-확인">보낸 메시지를 잘 저장했는지 확인</h1>
+<p><strong>“acks”</strong>
+<br /></p>
+
+<p>acks는 브로커가 메시지를 저장한 후, 프로듀서에게 응답을 보내는 조건을 설정하는 옵션이다. 기본값은 1이다.
+초반엔 헷갈릴수 있는 점이 하나 존재한다. acks는 몇개의 복제본을 만드는지에 대한 설정이 아니라, “전체 복제본 생성 과정중에 몇개의 복제본이 생긴 뒤에 응답하느냐”를 설정하는것이다. 아직도 비슷하다 느낄수 있어 더 설명하자면 
+카프카에서 복제본은 ISR 갯수만큼 만들게 된다. ISR이 복제본을 만드는 과정에서 <strong>몇개를 만든 시점에</strong> 프러듀서에게 응답을 보낼까 라는 설정이다. ISR 갯수가 5개일때 acks가 1개라면 ISR 5개 모두 복제본 생기는 와중에 1개만 복제되면 응답을 보낸다. 카프카는 브로커 시작 시 설정된 “replication.factor” 값만큼 메시지의 복제본을 만든다. replication.factor만큼 복제하기전에 acks 설정값만큼 복제되면 중도에 미리 응답하게 된다.</p>
+
+<p>이 값을 작게 하면 리더만 저장해도 되므로 처리 속도가 빠르지만, 리더 브로커가 망가졌을 때 데이터 유실 위험이 있다.
+반면, 크게 설정하면 ISR(동기화된 복제본) 모두가 저장해야 응답을 보내므로 속도는 느리지만 안정성이 높아진다.</p>
+
+<p>설정 가능값은 0, 1, all. 3가지 존재한다.</p>
+
+<h1 id="프로듀서가-동시에-몇개의-메시지를-보낼수-있는지-설정하기">프로듀서가 동시에 몇개의 메시지를 보낼수 있는지 설정하기.</h1>
+<p><strong>“max.in.flight.requests.per.connection”</strong>
+<br /></p>
+
+<p>max.in.flight.requests.per.connection 설정이 작동하는 방식은 꽤나 재밌다.
+이 설정은 파티션이 얼만큼의 메시지를 동시에 보낼 수 있는지 조절하는 설정값이다. 기본 값은 5로 설정돼있다. 값이 5로 설정돼있다면 동시에 진행될수 있는 메시지 전송 프로세스는 최대 5개로 제한된다.
+조절하는 방식은 Queue를 이용한다. 설정값만큼의 길이를 가지는 in.flight.queue가 따로 존재한다. 그리고 프로듀서가 메시지를 보내기전에 queue에 메시지를 넣을수 있는지 확인한다. (queue.length &lt; max.in.flight.request.per.connection 값) 전달이 시작된 메시지들은 in.flight 큐로 들어가게 되고 완료 처리 될때까지 queue안에서 관리된다.</p>
+
+<p>기본 작동 방식은 아래와 같다.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre></td><td class="rouge-code"><pre>1. in flight 큐에 들어가있는 메시지 갯수가 max.in.flight.requests.per.connection 수보다 작은지 확인한다.
+2. 작다면 브로커에 메시지를 보내고 in flight 큐에 넣는다.
+3. 브로커에서 ask를 받았다.
+4. 프로듀서에서 브로커에 전달 완료했음을 처리한다.
+5. 완료 처리된 메시지는 queue에서 제거한다.
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>여기서 중요한 점은 다른 설정들에 따라 작동방식이 달라진다는 점이다.</p>
+
+<p><br /></p>
+
+<p><strong>1. “acks”에 따른 변화</strong></p>
+
+<p><strong>acks = 0</strong>
+이 경우에는 브로커가 메시지를 받았다는 응답을 기다리지않는다. 프로듀서에서 브로커에 메시지를 보내버리고 끝이다. (브로커가 제대로 받던 말던 신경안씀) 그렇기때문에 이 상황에서는 max.in.flight 설정이 무의미해진다. queue를 확인하는 절차도 queue에 메시지를 넣는 작업도 하지않게된다.</p>
+
+<p><br /></p>
+
+<p><strong>acks &gt; 0</strong>
+이 경우에는 프로듀서는 브로커가 메시지를 잘저장했는지에 대한 응답을 기다리기때문에 메시지를 전송하고 해당 응답을 기다리게된다. 응답을 기다리는 곳이 in.flight.queue인 것이다. 그러므로 in.flight 옵션이 정상 작동된다.</p>
+
+<p><br /></p>
+
+<p><strong>2. enable.idempotence에 따른 변화</strong></p>
+
+<p><strong>enable.idempotence == true</strong>
+이 경우가 꽤나 재미있다. true로 설정돼있을 때는 메시지 전송시에 sequence number를 같이 보내고 브로커로부터 완료 메시지를 받을 때도 동일한 sequence number를 받게된다. 
+in.flight 큐에 들어간 순서대로 sequence number가 커지게 되니까 당연히 head(맨앞) 값이 제일 작다. 이때 여러개의 메시지를 비동기로 같이 보내지만 순서의 안정성을 이룰수 있는 방법이 생기게된다.
+브로커로 받은 메시지의 sequence number가 큐 맨앞(head)의 sequence number보다 크다면 순번이 후순위이기 때문에 head의 메시지가 완료되기까지 보류된다.</p>
+
+<p>후순위가 먼저 응답됐을 때 보류됨으로써 얻어지는 이점은 꽤나 강력하다. “선순위의 메시지가 완료되어 큐에서 빠지기전까지는 후순위 메시지들도 빠질수 없기때문에 보내는 양이 자동으로 조절된다.” 인프라 관리 측면, 순서 관리측면에서 알아서 안정화되는 것이다.</p>
+
+<p><br /></p>
+
+<p><strong>enable.idempotence == false</strong>
+이 경우에는 sequence number를 이용하지않는다. 그러므로 먼저 응답온 메시지는 큐에서 먼저 빠진다. 순서 보장도 없고 중복 방지도 불가하다. 단순히 동시에 보내는 갯수만 조절할뿐이다.</p>
+
+<ul>
+  <li>(참고) true일 때는 max.in.flight 값이 5 이하로 강제된다. 5이상이라면 OutOfOrderSequenceException 가 발생할 확률이 너무 높아진다.</li>
+</ul>
+
+<h1 id="batch를-압축해서-보낼지-어떤-종류로-압축할지">batch를 압축해서 보낼지. 어떤 종류로 압축할지</h1>
+
+<p><strong>“compression.type”</strong></p>
+
+<p><br /></p>
+
+<p>가능한 값으로는 none, gzip, snappy, lz4, zstd. 최근 버전에서는 zstd(Zstandard)를 권장한다고 한다.
+압축 단위는 당연히 batch이다.</p>
+
+<p>보통 snappy, lz4 알고리즘이 빠르게 압축해야할 때 이용된다. 마이크로서비스와 같이 응답이 빨라야할때 이용. 
+gzip, zstd는 압축률이 커야할 때 이용한다. 로깅 처리와 같이 천천히 해도 될때 이용.</p>
+
+		
+	</div>
+	<div class="comment">
+		<script src="https://utteranc.es/client.js"
+        repo="moonqqqq/blog-comment"
+        issue-term="pathname"
+        label="comments"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
+	</div>
+</article>
+
+
+
+	  </main>
+		
+		  <!-- Pagination links -->
+      
+
+	  </div>
+	    
+	    <!-- Footer -->
+	    <footer><span>@2017 - Monochrome</span></footer>
+
+
+	    <!-- Script -->
+      <script src="/js/main.js"></script>	
+
+
+	</div>
+</body>
+</html>

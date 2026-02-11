@@ -48,6 +48,8 @@
 	  
 	    
 	  
+	    
+	  
     
     <!-- Nav links -->
 	  <a href="https://github.com/moonqqqq" aria-label="Homepage" class="footer-octicon" title="GitHub">
@@ -104,6 +106,8 @@
 	    
 	      
 	    
+	      
+	    
       
       <!-- Nav links -->
 	    <a href="https://github.com/moonqqqq" aria-label="Homepage" class="footer-octicon" title="GitHub">
@@ -127,7 +131,7 @@
 
 			<article id="post-page">
 	<h2>Node.js의 스트림 배압 처리 고도화 (Observable의 한계점)</h2>		
-	<time datetime="2024-02-04T00:00:00-06:00" class="by-line">04 Feb 2024</time>
+	<time datetime="2025-05-10T00:00:00-05:00" class="by-line">10 May 2025</time>
 	<div class="content">
 
 		<p>LLM 응답 스트리밍 서버가 OOM(Out of memory)으로인해 꺼져버리는 현상이 간간히 로그에 찍혀있었다.</p>
@@ -244,11 +248,11 @@ server-1 exited with code 137  # OOM 발생
 </pre></td><td class="rouge-code"><pre>데이터소스 -&gt; observer.next() -&gt; [RxJS 전용(concatMap) 버퍼] -&gt; [WritableStream 버퍼] -&gt; [Socket 버퍼]
 </pre></td></tr></tbody></table></code></pre></div></div>
 
-<p>Node.js 자체적으로</p>
+<p>Nest.js 자체적으로</p>
 <ol>
   <li>TCP socket 버퍼에 데이터가 꽉차면 writableStream 버퍼에서 데이터를 안보내게 되고.</li>
   <li>WritableStream 버퍼에 데이터가 꽉차면 RxJS 전용 버퍼에서 데이터를 안보내게 된다.</li>
-  <li><strong>하지만 RxJS의 버퍼는 꽉찼는지 아닌지에 대한 기준이 존재하지않았다.</strong> 
+  <li><strong>하지만 RxJS의 버퍼에서는 데이터가 꽉찼는지아닌지 확인하는 로직이 따로 없다.</strong> 
 그러다보니 당연하게도 Out Of Memory가 발생할수 밖에 없었다. 클라이언트쪽이던 서버쪽이던 네트워크문제가 생긴다면 어쩔수 없는거였다.</li>
 </ol>
 

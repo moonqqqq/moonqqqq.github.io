@@ -135,7 +135,7 @@
 #header {
   border-bottom:  1px solid rgba(0,0,0,0.14);
   text-align: center;
-  margin-bottom: 1.5em;
+  margin-bottom: 0.3em;
   height: 5em;
   position: relative;
   a {
@@ -146,7 +146,7 @@
     margin: 0 auto;
   }
   h1 {
-    font-size: 2em;
+    font-size: 1.5em;
     padding-bottom: 0;
     span {
       color: $text-light-color;
@@ -175,21 +175,21 @@
     content: '';
     width: 5rem;
     height: 1px;
-    margin: 23px auto;
+    margin: 6px auto;
     background-color: lighten($text-color, 70%);
   }
 
 .by-line {
   display: block;
   color: lighten($text-color, 25%);
-  line-height: 1.8em; 
-  margin-bottom: 1.5em; /* 24px/16px */
+  line-height: 1.8em;
+  margin-bottom: 0.75em;
   font-weight: 200;
   @media (min-width: 940px) {
     display: block;
     color: lighten($text-color, 25%);
     line-height: 1.8em;
-    margin-bottom: 1.3334em; /* 24px/18px */
+    margin-bottom: 0.75em;
     font-weight: 200;
   }
 }
