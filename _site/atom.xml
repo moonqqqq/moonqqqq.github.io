@@ -4,12 +4,22 @@
  <title>김문규블로그</title>
  <link href="http://0.0.0.0:4000/atom.xml" rel="self"/>
  <id>http://0.0.0.0:4000</id>
- <updated>2026-02-11T02:46:33-06:00</updated>
+ <updated>2026-02-13T21:05:29-06:00</updated>
  <author>
    <name>moonq kim</name>
    <uri>https://moonqqqq.github.io</uri>
    <email>make.abundant@gmail.com</email>
  </author>
+
+ 
+
+ <entry>
+   <title>딥리서치 스트림 - 재실행 보장과 Dirty Write</title>
+   <link href="http://0.0.0.0:4000/stream-and-dirty-write"/>
+   <id>http://0.0.0.0:4000/stream-and-dirty-write</id>
+   <updated>2025-08-01T00:00:00-05:00</updated>
+   <content type="html">&lt;p&gt;LLM 딥리서치 기능은 장시간 Stream으로 응답을 전달해줘야하면서도 무조건 성공해야하는 작업에 속한다. 그래서 Queue로 작업들을 안전하게 보관하면서 작업이 실패했을 때는 성공할때까지 재실행을 해야한다. UI적으로도 오래걸린다는걸 표현하고 있기때문에 빠르게 응답을 할 필요도 딱히 없다. 하지만 여기서 문제는 &lt;strong&gt;“어떻게든 성공해야한다”라는 측면에서 발생한다. Queue를 통해 재실행을 관리하다보면 하나의 job 동시에 여러군데서 실행되는 일이 발생한다.&lt;/strong&gt;&lt;/p&gt;...</content>
+ </entry>
 
  
 
@@ -99,16 +109,6 @@
    <id>http://0.0.0.0:4000/dependnecy-manage-on-nestjs</id>
    <updated>2023-06-30T00:00:00-05:00</updated>
    <content type="html">&lt;p&gt;어떤 아키텍쳐를 쓰던 DI(dependency injection)는 대부분 이용된다. Nest.js의 기본 구조도 그렇다. 그런데 DI로 개발하다보면 의존성이 꼬이는 일이 발생하는 경우가 있다. 대부분이 &lt;strong&gt;circular dependency&lt;/strong&gt;로 나타난다. 이 때 &lt;em&gt;lazy loading&lt;/em&gt;을 이용해서 circular dependency 발생 없이 개발할수도 있지만 상호의존은 최악의 구조이기 때문에 최대한 불가피한 경우에만 써야한다.&lt;/p&gt; &lt;p&gt;내가 관리하는 프로젝트들에서 상호 의존을 피하기 위한...</content>
- </entry>
-
- 
-
- <entry>
-   <title>Join 알고리즘 대표적 3가지 특징/최적화</title>
-   <link href="http://0.0.0.0:4000/join-algorithms-2"/>
-   <id>http://0.0.0.0:4000/join-algorithms-2</id>
-   <updated>2023-01-06T00:00:00-06:00</updated>
-   <content type="html">&lt;h4 id=&quot;시리즈-목차&quot;&gt;시리즈 목차&lt;/h4&gt; &lt;p&gt;&lt;a href=&quot;https://moonqqqq.github.io/join-algorithms-1&quot;&gt;1. Join 알고리즘의 종류&lt;/a&gt; &lt;br /&gt; &lt;u&gt;(현재글) 2. Join 알고리즘 최적화&lt;/u&gt; &lt;br /&gt;&lt;/p&gt; &lt;h1 id=&quot;3가지-조인-비교&quot;&gt;3가지 조인 비교&lt;/h1&gt; &lt;p&gt;3가지 조인 알고리즘이 어떤 상황에 선택되는지(유리한지) 알아보자. 일단은 시간복잡도부터 따져보면. Nested Loop은 O(N*M), Hash와 Sort-Merge는 O(N+M)이다.&lt;/p&gt; &lt;p&gt;조인 알고리즘은 &lt;strong&gt;WHERE문으로 필터링된 데이터의 갯수&lt;/strong&gt;에 따라 첫번째로 갈린다. WHERE문으로 필터링이 많이돼서 Join할...</content>
  </entry>
 
  
